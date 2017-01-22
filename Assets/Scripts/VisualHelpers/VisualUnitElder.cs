@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class VisualUnitLarva : VisualUnit {
+public class VisualUnitElder : VisualUnit {
 
 	public SpriteRenderer m_Renderer;
 	public ButtonOrbit m_Orbit;
@@ -19,7 +19,7 @@ public class VisualUnitLarva : VisualUnit {
 
 	void Start()
 	{
-		m_Cooldown=CooldownPool.Instance.GetLarvaCooldown();
+		m_Cooldown=CooldownPool.Instance.GetElderCooldown();
 	}
 
 	public void SetLevelFeedback(byte _level,GlobalShit.WaveType _type)

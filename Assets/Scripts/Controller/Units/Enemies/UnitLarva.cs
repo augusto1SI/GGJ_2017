@@ -144,6 +144,7 @@ public class UnitLarva : UnitAI {
 					{
 						m_WaveNeeded=m_EvolvingWaveSequence[m_SequenceCount];
 						m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
+						m_Visual.SequenceProgress(m_SequenceCount);
 					}
 
 					m_Visual.DisplayCooldown(m_EvolvingCooldown);
