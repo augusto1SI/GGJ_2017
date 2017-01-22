@@ -7,6 +7,11 @@ public class WaveElement : MonoBehaviour
     public Animation m_WaveAnimation;
     public WaveTriggerController m_WaveTriggerController;
 
+    void Start()
+    {
+        m_WaveTriggerController.Initialize(m_WaveAnimation.clip.length);
+    }
+
 	public bool TryDoWave ()
     {
 	    if(m_WaveTriggerController.TryDoWave())

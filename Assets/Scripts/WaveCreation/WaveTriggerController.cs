@@ -3,7 +3,6 @@ using System.Collections;
 
 public class WaveTriggerController : MonoBehaviour
 {
-    public AnimationClip m_WaveAnimation;
     public SphereCollider m_Collider;
     public float m_MinSize;
     public float m_MaxSize;
@@ -12,10 +11,10 @@ public class WaveTriggerController : MonoBehaviour
     private float m_TimeMultiplier;
     private bool m_IsDoingAnimation;
 	// Use this for initialization
-	void Start ()
+	public void Initialize (float _animLength)
     {
         m_IsDoingAnimation = false;
-        m_TimeMultiplier = 1f / m_WaveAnimation.length;
+        m_TimeMultiplier = 1f / _animLength;
 
         m_Collider.enabled = false;
 	}
