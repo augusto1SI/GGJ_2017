@@ -64,11 +64,13 @@ public class UnitLarva : UnitAI {
 				break;
 				case UnitAIState.Alive:
 					m_WaveNeeded=GlobalShit.GetRandomBasicWave();
+                    AudioManager.Instance.PlaySFX(AudioCore.SFXID.CORRECT);
 					yield return StartCoroutine(Alive());
 				break;
 				case UnitAIState.Awake:
 					m_WaveNeeded=m_EvolvingWaveSequence[0];
 					m_SequenceCount=0;
+                    AudioManager.Instance.PlaySFX(AudioCore.SFXID.CORRECT);
 					yield return StartCoroutine(Awaken());
 				break;
 				case UnitAIState.Follow:
@@ -125,10 +127,11 @@ public class UnitLarva : UnitAI {
 		while(!IsMaxLevel())
 		{
 			if(m_LastReceivedWave==m_WaveNeeded)
-			{
+            {
 				m_LastReceivedWave=GlobalShit.WaveType.None;
 				m_SequenceCount++;
 				m_Visual.SequenceProgress(m_SequenceCount);
+                AudioManager.Instance.PlaySFX(AudioCore.SFXID.CORRECT);
 				if(m_SequenceCount==m_EvolvingWaveSequence.Length)
 				{
 					IncreaseLevel();
