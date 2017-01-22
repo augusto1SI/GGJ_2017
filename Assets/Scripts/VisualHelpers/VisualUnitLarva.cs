@@ -15,7 +15,11 @@ public class VisualUnitLarva : VisualUnit {
 	{
 		m_Renderer=GetComponent<SpriteRenderer>();
 		m_Orbit=GetComponentInChildren<ButtonOrbit>();
+	}
 
+	void Start()
+	{
+		m_Cooldown=CooldownPool.Instance.GetCooldown();
 	}
 
 	public void SetLevelFeedback(byte _level,GlobalShit.WaveType _type)
