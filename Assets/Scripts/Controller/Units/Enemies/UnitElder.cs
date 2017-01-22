@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class UnitLarva : UnitAI {
+public class UnitElder : UnitAI {
 
 	public GlobalShit.WaveType m_LastReceivedWave;
 	public GlobalShit.WaveType m_WaveNeeded;
@@ -87,16 +87,41 @@ public class UnitLarva : UnitAI {
 	#region STATE_INERT
 	IEnumerator Inert()
 	{
-		m_Visual.SetVisible(false);
+		m_Visual.SetVisible(true);
 		m_Visual.SetOrbitVisible(false);
-		while(!GlobalShit.IsABasicWave(m_LastReceivedWave))
+		SetupInfection();
+		while(StillInfected())
 		{
 			yield return null;
 		}
-		m_LastReceivedWave=GlobalShit.WaveType.None;
 		m_State=UnitAIState.Alive;
 		yield return null;
 	}
+
+	void SetupInfection()
+	{
+		/*
+		for(int i=0;i<m_;i++)
+		{
+				
+		}
+		*/
+	}
+
+	bool StillInfected()
+	{
+		return true;
+		/*
+		for(int i=0;i<m_Parasites.Count;i++)
+		{
+			
+		}
+*/
+	}
+
+	void AddInfection()
+	{}
+
 	#endregion
 
 	#region STATE_ALIVE
@@ -129,7 +154,6 @@ public class UnitLarva : UnitAI {
 			{
 				m_LastReceivedWave=GlobalShit.WaveType.None;
 				m_SequenceCount++;
-				m_Visual.SequenceProgress(m_SequenceCount);
 				if(m_SequenceCount==m_EvolvingWaveSequence.Length)
 				{
 					IncreaseLevel();
@@ -137,14 +161,9 @@ public class UnitLarva : UnitAI {
 					m_SequenceCount=0;
 
 					if(IsMaxLevel())
-					{
 						m_Visual.SetOrbitVisible(false);
-					}
 					else
-					{
 						m_WaveNeeded=m_EvolvingWaveSequence[m_SequenceCount];
-						m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
-					}
 
 					m_Visual.DisplayCooldown(m_EvolvingCooldown);
 					yield return new WaitForSeconds(m_EvolvingCooldown);

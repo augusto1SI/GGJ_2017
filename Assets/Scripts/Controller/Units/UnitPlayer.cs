@@ -7,6 +7,9 @@ public class UnitPlayer : Unit
 
 	private CharacterController control;
 
+	private byte m_MaxFollowers=10;
+	private byte m_CurrentFollowers=0;
+
 	private float gravity = 0f;
 
 	private Vector3 lookPosition = Vector3.zero;
@@ -74,4 +77,9 @@ public class UnitPlayer : Unit
 		hit.rigidbody.AddForceAtPosition(pushDir * m_PushForce, hit.point);
 	}
 
+
+	public bool CanIFollowYou()
+	{
+		return m_CurrentFollowers<m_MaxFollowers;
+	}
 }

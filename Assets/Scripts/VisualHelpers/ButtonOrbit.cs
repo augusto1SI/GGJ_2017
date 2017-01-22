@@ -72,4 +72,12 @@ public class ButtonOrbit : MonoBehaviour {
 	{
 		m_Orbiting=_orbit;
 	}
+
+	public void IgnoreIconsLowerThan(int _limit)
+	{
+		for(int i=0;i<_limit;i++)
+		{
+			m_BtnRenderers[i].enabled=false;				
+		}
+	}
 }
