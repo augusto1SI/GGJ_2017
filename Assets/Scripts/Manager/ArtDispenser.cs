@@ -19,6 +19,13 @@ public class ArtDispenser : MonoBehaviour {
 	public Sprite[] m_NoteIcons;
 	public Color m_HighlightColor;
 	public Color m_OpaqueColor;
+	public AnimFrameLibrary[] m_AnimLibraries;
+
+	public AnimFrameLibrary GetAnimLibrary(GlobalShit.WaveType _type)
+	{
+		return m_AnimLibraries[((int)_type)];
+	}
+
 	public Sprite GetNoteIcon(int _idx)
 	{
 		
