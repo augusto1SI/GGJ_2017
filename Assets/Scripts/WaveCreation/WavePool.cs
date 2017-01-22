@@ -7,6 +7,7 @@ public class WavePool : MonoBehaviour
 
     public bool DoWaveOfType(int _type)
     {
+		Debug.Log("ENTRE CON:"+_type);
         for(int i = 0; i < m_Waves.Length; ++i)
         {
             if(m_Waves[i].m_WaveTypeID == _type)

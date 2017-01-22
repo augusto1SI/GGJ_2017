@@ -19,7 +19,7 @@ public class VisualUnitLarva : VisualUnit {
 
 	void Start()
 	{
-		m_Cooldown=CooldownPool.Instance.GetCooldown();
+		m_Cooldown=CooldownPool.Instance.GetLarvaCooldown();
 	}
 
 	public void SetLevelFeedback(byte _level,GlobalShit.WaveType _type)

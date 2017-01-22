@@ -8,9 +8,6 @@ public class ButtonOrbit : MonoBehaviour {
 	public Transform m_Pivot;
 	public Vector3 m_Direction;
 
-
-	public Sprite[] tempSprites;
-
 	[SerializeField]
 	private bool m_Orbiting=false;
 
@@ -29,6 +26,9 @@ public class ButtonOrbit : MonoBehaviour {
 		{
 			m_BtnRenderers[i].enabled=_visible;
 		}
+
+		if(_visible)
+			HighlightFirstIcon();
 	}
 
 	void Update()
@@ -53,7 +53,7 @@ public class ButtonOrbit : MonoBehaviour {
 			if(i<_type.Length)
 			{
 				m_BtnRenderers[i].enabled=true;
-				m_BtnRenderers[i].sprite = tempSprites[(int)_type[i]];
+				m_BtnRenderers[i].sprite = ArtDispenser.Instance.GetNoteIcon((int)_type[i]);
 			}
 			else
 			{
@@ -65,7 +65,7 @@ public class ButtonOrbit : MonoBehaviour {
 	public void SetIcon(GlobalShit.WaveType _type)
 	{
 		m_BtnRenderers[0].enabled=true;
-		m_BtnRenderers[0].sprite = tempSprites[(int)_type];
+		m_BtnRenderers[0].sprite = ArtDispenser.Instance.GetNoteIcon((int)_type);
 	}
 
 	public void Orbit(bool _orbit)
@@ -78,6 +78,29 @@ public class ButtonOrbit : MonoBehaviour {
 		for(int i=0;i<_limit;i++)
 		{
 			m_BtnRenderers[i].enabled=false;				
+		}
+
+		HighlightFirstIcon();
+	}
+
+	public void HighlightFirstIcon()
+	{
+		bool firstFound=false;
+
+		for(int i=0;i<m_BtnRenderers.Length;i++)
+		{
+			if(m_BtnRenderers[i].enabled)
+			{
+				if(!firstFound)
+				{
+					firstFound=true;
+					m_BtnRenderers[i].color=ArtDispenser.Instance.m_HighlightColor;
+				}
+				else
+				{
+					m_BtnRenderers[i].color=ArtDispenser.Instance.m_OpaqueColor;
+				}
+			}
 		}
 	}
 }

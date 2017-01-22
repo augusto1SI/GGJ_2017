@@ -3,7 +3,6 @@ using System.Collections;
 
 public class UnitLarva : UnitAI {
 
-	public GlobalShit.WaveType m_LastReceivedWave;
 	public GlobalShit.WaveType m_WaveNeeded;
 
 	public UnitPlayer m_Player;
@@ -144,6 +143,7 @@ public class UnitLarva : UnitAI {
 					{
 						m_WaveNeeded=m_EvolvingWaveSequence[m_SequenceCount];
 						m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
+						m_Visual.SequenceProgress(m_SequenceCount);
 					}
 
 					m_Visual.DisplayCooldown(m_EvolvingCooldown);
@@ -233,7 +233,7 @@ public class UnitLarva : UnitAI {
 		if(m_State!=UnitAIState.Follow)
 			return;
 
-		//TODO: send the player the note here!!
+		m_Player.ShootWave(m_UseWaveType);
 		m_RemainingUses--;
 		if(m_RemainingUses==0)
 		{
