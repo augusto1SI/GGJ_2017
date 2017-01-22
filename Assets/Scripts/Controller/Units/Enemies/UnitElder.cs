@@ -3,7 +3,6 @@ using System.Collections;
 
 public class UnitElder : UnitAI {
 
-	public GlobalShit.WaveType m_LastReceivedWave;
 	public GlobalShit.WaveType m_WaveNeeded;
 
 	public UnitPlayer m_Player;

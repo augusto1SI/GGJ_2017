@@ -17,6 +17,8 @@ public abstract class UnitAI : Unit {
 
 	public UnitAIState m_State;
 
+	public GlobalShit.WaveType m_LastReceivedWave;
+
 
 	protected static LayerMask worldMask = -1;
 

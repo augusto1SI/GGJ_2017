@@ -16,13 +16,27 @@ public class UnitPlayer : Unit
 
 	public Texture crosshair;
 
+	public WavePool m_WavePool;
+
+	public ButtonReceiver m_ButtonA;
+	public ButtonReceiver m_ButtonB;
+	public ButtonReceiver m_ButtonC;
+
+
 	public override void Start ()
 	{
 		base.Start ();
 
 		agent.updatePosition = agent.updateRotation = false;
 
+		m_WavePool=GetComponentInChildren<WavePool>();
+
 		control = GetComponent<CharacterController>();
+
+		m_ButtonA.OnClicked += ClickButtonA;
+		m_ButtonB.OnClicked += ClickButtonB;
+		m_ButtonC.OnClicked += ClickButtonC;
+
 
 		if(!control)
 		{
@@ -59,6 +73,7 @@ public class UnitPlayer : Unit
 		base.Update();
 	}
 
+	/*
 	void OnGUI()
 	{
 		if(crosshair)
@@ -66,6 +81,7 @@ public class UnitPlayer : Unit
 			GUI.DrawTexture(new Rect(Screen.width * 0.5f - (crosshair.width *0.5f), Screen.height * 0.5f -(crosshair.height * 0.5f), crosshair.width, crosshair.height), crosshair);
 		}
 	}
+	*/
 
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
@@ -75,6 +91,29 @@ public class UnitPlayer : Unit
 		Vector3 pushDir=new Vector3(hit.moveDirection.x, 0,hit.moveDirection.z);
 
 		hit.rigidbody.AddForceAtPosition(pushDir * m_PushForce, hit.point);
+	}
+
+	public void ShootWave(GlobalShit.WaveType _type)
+	{
+		m_WavePool.DoWaveOfType(((int)_type));
+	}
+
+	void ClickButtonA()
+	{
+		Debug.Log("Button A Pressed");
+		ShootWave(GlobalShit.WaveType.TypeA);
+	}
+
+	void ClickButtonB()
+	{
+		Debug.Log("Button B Pressed");
+		ShootWave(GlobalShit.WaveType.TypeB);
+	}
+
+	void ClickButtonC()
+	{
+		Debug.Log("Button C Pressed");
+		ShootWave(GlobalShit.WaveType.TypeC);
 	}
 
 
