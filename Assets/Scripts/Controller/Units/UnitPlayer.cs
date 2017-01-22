@@ -57,8 +57,16 @@ public class UnitPlayer : Unit
 		//TURN CODE
 		transform.Rotate(0f,Input.GetAxis("Mouse X") * m_TurnSpeed * Time.deltaTime, 0f);
 
+        Vector3 move = Vector3.zero;
 		//MOVE CODE
-		Vector3 move=new Vector3(Input.GetAxis("Horizontal"),0f,Input.GetAxis("Vertical"));
+        if(Input.GetMouseButton(0))
+        {
+            Vector3 mPos = Input.mousePosition;
+            mPos.z = transform.position.z;
+            mPos = Camera.main.ScreenToWorldPoint(mPos);
+            move = Vector3.Normalize(mPos - transform.position);
+        }
+		//Vector3 move=new Vector3(Input.GetAxis("Horizontal"),0f,Input.GetAxis("Vertical"));
 
 		move.Normalize();
 
