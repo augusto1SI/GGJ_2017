@@ -24,6 +24,13 @@ public class UnitPlayer : Unit
 	public ButtonReceiver m_ButtonB;
 	public ButtonReceiver m_ButtonC;
 
+    private Vector3 m_LastMousePosition;
+    private float m_DistanceTolerance = 1f;
+    private float m_MaxAccel = 25f;
+
+    public Transform m_VisualPlayer;
+    private Vector3 m_RotationLeft = new Vector3(-90, -35, 0);
+    private Vector3 m_RotationRight = new Vector3(-90, 35, 0);
 
 	public override void Start ()
 	{
@@ -50,6 +57,8 @@ public class UnitPlayer : Unit
 			enabled=false;
 			return;
 		}
+
+        m_LastMousePosition = transform.position;
 	}
 
 	public override void Update()
@@ -59,18 +68,39 @@ public class UnitPlayer : Unit
 
         Vector3 move = Vector3.zero;
 		//MOVE CODE
-        if(Input.GetMouseButton(0))
+        if (Input.touchCount > 0)
         {
-            Vector3 mPos = Input.mousePosition;
-            mPos.z = transform.position.z;
-            mPos = Camera.main.ScreenToWorldPoint(mPos);
-            move = Vector3.Normalize(mPos - transform.position);
+            if(Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Moved)
+            {
+                m_LastMousePosition = Input.GetTouch(0).position;
+                m_LastMousePosition.z = transform.position.z;
+                m_LastMousePosition = Camera.main.ScreenToWorldPoint(m_LastMousePosition);
+            }
         }
+        else if (Input.GetMouseButton(0))
+        {
+            RaycastHit hit; 
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, 100.0f))
+            {
+                if (hit.collider.gameObject.name=="PhysixSpace")
+                {
+                    m_LastMousePosition = Input.mousePosition;
+                    m_LastMousePosition.z = transform.position.z;
+                    m_LastMousePosition = Camera.main.ScreenToWorldPoint(m_LastMousePosition);
+                }
+            }
+            //m_LastMousePosition.y = transform.position.y;
+        }
+
+        move = Vector3.Normalize(m_LastMousePosition - transform.position);
+
+        m_VisualPlayer.eulerAngles = Vector3.Lerp(m_RotationLeft, m_RotationRight, (move.x + 1) * 0.5f);
 		//Vector3 move=new Vector3(Input.GetAxis("Horizontal"),0f,Input.GetAxis("Vertical"));
 
-		move.Normalize();
+		//move.Normalize();
 
-		move*=m_WalkSpeed;
+		move*=m_MaxAccel;
 
 		move=transform.TransformDirection(move);
 
