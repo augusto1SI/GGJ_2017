@@ -59,13 +59,10 @@ public class AudioManager : AudioCore
 		//Do state machine code here
 		switch(_ended)
 		{
-			case MusicID.BGMusic_Library:
+            case MusicID.BGMusic_GGJ_Track01:
 				PlayMusic(_ended);
 				break;
-			case MusicID.BGMusic_Match3:
-				PlayMusic(_ended);
-				break;
-			case MusicID.BGMusic_Stack:
+            case MusicID.BGMusic_GGJ_Track02:
 				PlayMusic(_ended);
 				break;
 			default:

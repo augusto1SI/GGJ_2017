@@ -5,9 +5,8 @@ public class AudioCore : MonoBehaviour
 {
 	public enum MusicID
 	{
-		BGMusic_Library,
-		BGMusic_Match3,
-		BGMusic_Stack,
+		BGMusic_GGJ_Track01,
+        BGMusic_GGJ_Track02,
 		None
 	};
 
