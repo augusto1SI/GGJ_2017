@@ -78,11 +78,8 @@ public class UnitLarva : UnitAI {
 				break;
 				case UnitAIState.Alive:
 					m_WaveNeeded=GlobalShit.GetRandomBasicWave();
-<<<<<<< HEAD
 					m_Anim.Play(0);
-=======
                     AudioManager.Instance.PlaySFX(AudioCore.SFXID.CORRECT);
->>>>>>> cubo
 					yield return StartCoroutine(Alive());
 				break;
 				case UnitAIState.Awake:
