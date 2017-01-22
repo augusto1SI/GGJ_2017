@@ -21,7 +21,7 @@ public class UnitElder : UnitAI {
 	private float m_InfectionSpreadTime=10;
 	private float m_InfectionSpreadETA=0;
 
-	private float m_FollowDistance=2;
+	public float m_FollowDistance=2;
 	public  GlobalShit.WaveType[] m_WakeUpWaveSequence;
 	public  GlobalShit.WaveType[] m_EvolvingWaveSequence;
 	public GlobalShit.WaveType m_UseWaveType;
@@ -29,6 +29,10 @@ public class UnitElder : UnitAI {
 	private int m_SequenceCount=0;
 
 	private float m_EvolvingCooldown=3;
+
+	private Vector3 m_InitialPosition;
+
+	public SpriteAnim m_Anim;
 
 	// Use this for initialization
 	public override void Start () {
@@ -51,6 +55,8 @@ public class UnitElder : UnitAI {
 		agent.angularSpeed = m_TurnSpeed;
 
 		StartCoroutine(Think());
+
+		m_InitialPosition=transform.position;
 	}
 
 
@@ -68,11 +74,14 @@ public class UnitElder : UnitAI {
 			switch(m_State)
 			{
 				case UnitAIState.Inert:
+					m_Anim.m_Library = ArtDispenser.Instance.GetAnimLibrary(m_UseWaveType);
+					m_Anim.Play(0);
 					yield return StartCoroutine(Inert());
 				break;
 				case UnitAIState.Alive:
 					m_WaveNeeded=m_WakeUpWaveSequence[0];
 					m_SequenceCount=0;
+					m_Anim.Play(1);
 					yield return StartCoroutine(Alive());
 				break;
 				case UnitAIState.Awake:
@@ -85,7 +94,7 @@ public class UnitElder : UnitAI {
 					yield return StartCoroutine(Follow());
 				break;
 				case UnitAIState.Dead:
-					yield return null;
+					yield return StartCoroutine(Die());
 				break;
 			}
 			yield return null;
@@ -171,7 +180,7 @@ public class UnitElder : UnitAI {
 	IEnumerator Alive()
 	{
 		SetLevel(0);
-		m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
+	//	m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
 		m_Visual.SetOrbitVisible(true);
 		m_Visual.m_Orbit.SetIcon(m_WakeUpWaveSequence);
 		while(m_SequenceCount<m_WakeUpWaveSequence.Length)
@@ -197,7 +206,7 @@ public class UnitElder : UnitAI {
 	IEnumerator Awaken()
 	{
 		SetLevel(1);
-		m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
+	//	m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
 		m_Visual.SetOrbitVisible(true);
 		m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
 		while(!IsMaxLevel())
@@ -210,11 +219,12 @@ public class UnitElder : UnitAI {
 				if(m_SequenceCount==m_EvolvingWaveSequence.Length)
 				{
 					IncreaseLevel();
-					m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
+				//	m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
 					m_SequenceCount=0;
 
 					if(IsMaxLevel())
 					{
+						m_Anim.Play(2);
 						m_Visual.SetOrbitVisible(false);
 					}
 					else
@@ -277,7 +287,7 @@ public class UnitElder : UnitAI {
 
 		Vector3 lastKnowingTargetPosition = m_Player.transform.position;
 
-		while(m_Uses>0)
+		while(m_RemainingUses>0)
 		{
 
 			lastKnowingTargetPosition = m_Player.transform.position;
@@ -313,15 +323,24 @@ public class UnitElder : UnitAI {
 		if(m_State!=UnitAIState.Follow)
 			return;
 
-		//TODO: send the player the note here!!
+		m_Player.ShootWave(m_UseWaveType);
 		m_RemainingUses--;
 		if(m_RemainingUses==0)
 		{
-			m_State=UnitAIState.Dead;		
-			m_Visual.SetVisible(false);
+			m_State=UnitAIState.Dead;	
+			m_Anim.Play(3);
 			//TODO: Inform the player that this larva has been carried by the clown!!
 		}
 			
+	}
+
+	IEnumerator Die()
+	{
+		agent.Stop();
+		yield return new WaitForSeconds(2);
+		m_Visual.SetVisible(false);
+		transform.position=m_InitialPosition;
+		m_State=UnitAIState.Inert;
 	}
 	#endregion
 
