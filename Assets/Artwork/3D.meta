@@ -1,8 +1,15 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 23f8a7cd4958f45068a5eb8c5f91c3ab
+folderAsset: yes
+timeCreated: 1485024904
+licenseType: Pro
+=======
 guid: 8f298d219ab30d649b8afa63d33a3119
 folderAsset: yes
 timeCreated: 1485030749
 licenseType: Free
+>>>>>>> cubo
 DefaultImporter:
   userData: 
   assetBundleName: 
