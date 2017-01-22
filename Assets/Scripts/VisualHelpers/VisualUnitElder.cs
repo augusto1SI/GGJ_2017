@@ -30,6 +30,8 @@ public class VisualUnitElder : VisualUnit {
 	public override void SetVisible (bool _visible)
 	{
 		base.SetVisible (_visible);
+		if(_visible)
+			m_Renderer.color=Color.white;
 
 		m_Renderer.enabled=_visible;
 	}

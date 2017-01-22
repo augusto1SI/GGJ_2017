@@ -27,6 +27,7 @@ public class Parasite : MonoBehaviour {
 		SetVisible(true);
 		m_Orbit.Orbit(true);
 		m_Alive=true;
+		m_Renderer.color=Color.white;
 		m_Anim.Play(0);
 	}
 
