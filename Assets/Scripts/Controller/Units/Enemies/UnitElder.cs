@@ -7,9 +7,11 @@ public class UnitElder : UnitAI {
 	public GlobalShit.WaveType m_WaveNeeded;
 
 	public UnitPlayer m_Player;
-	public VisualUnitLarva m_Visual;
+	public VisualUnitElder m_Visual;
 
 	private ButtonReceiver m_ClickReceiver;
+
+	public Parasite[] m_Parasites;
 
 	private byte m_Level=0;
 	private byte m_MaxLevel=3;
@@ -17,7 +19,11 @@ public class UnitElder : UnitAI {
 	private int m_Uses=5;
 	private int m_RemainingUses;
 
+	private float m_InfectionSpreadTime=10;
+	private float m_InfectionSpreadETA=0;
+
 	private float m_FollowDistance=2;
+	public  GlobalShit.WaveType[] m_WakeUpWaveSequence;
 	public  GlobalShit.WaveType[] m_EvolvingWaveSequence;
 	public GlobalShit.WaveType m_UseWaveType;
 
@@ -32,12 +38,14 @@ public class UnitElder : UnitAI {
 		m_Player=FindObjectOfType<UnitPlayer>();
 
 		if(m_Visual==null)
-			m_Visual=GetComponentInChildren<VisualUnitLarva>();
+			m_Visual=GetComponentInChildren<VisualUnitElder>();
 
 		if (worldMask == -1)
 			worldMask =1 << LayerMask.NameToLayer ("World");
 
 		m_ClickReceiver=GetComponentInChildren<ButtonReceiver>();
+
+		m_Parasites=GetComponentsInChildren<Parasite>();
 
 		m_ClickReceiver.OnClicked += OnClick;
 
@@ -64,7 +72,8 @@ public class UnitElder : UnitAI {
 					yield return StartCoroutine(Inert());
 				break;
 				case UnitAIState.Alive:
-					m_WaveNeeded=GlobalShit.GetRandomBasicWave();
+					m_WaveNeeded=m_WakeUpWaveSequence[0];
+					m_SequenceCount=0;
 					yield return StartCoroutine(Alive());
 				break;
 				case UnitAIState.Awake:
@@ -87,55 +96,99 @@ public class UnitElder : UnitAI {
 	#region STATE_INERT
 	IEnumerator Inert()
 	{
+		gameObject.layer = 0;
+
 		m_Visual.SetVisible(true);
 		m_Visual.SetOrbitVisible(false);
 		SetupInfection();
 		while(StillInfected())
 		{
+			if(m_LastReceivedWave!=GlobalShit.WaveType.None)
+			{
+				m_InfectionSpreadETA=0;
+				RemoveInfection(m_LastReceivedWave);
+				m_LastReceivedWave=GlobalShit.WaveType.None;
+			}	
+			else
+			{
+				m_InfectionSpreadETA+=Time.deltaTime;
+			}
+
+			if(m_InfectionSpreadETA>=m_InfectionSpreadTime)
+			{
+				AddInfection();
+				m_InfectionSpreadETA=0;
+			}
 			yield return null;
 		}
 		m_State=UnitAIState.Alive;
 		yield return null;
+
 	}
 
 	void SetupInfection()
 	{
-		/*
-		for(int i=0;i<m_;i++)
+		
+		for(int i=0;i<m_Parasites.Length;i++)
 		{
-				
+			m_Parasites[i].Spawn(GlobalShit.GetRandomParasiteWave());	
 		}
-		*/
 	}
 
 	bool StillInfected()
 	{
-		return true;
-		/*
-		for(int i=0;i<m_Parasites.Count;i++)
+		for(int i=0;i<m_Parasites.Length;i++)
 		{
-			
+			if(m_Parasites[i].m_Alive)
+				return true;
 		}
-*/
+		return false;
+	}
+
+	void RemoveInfection(GlobalShit.WaveType _type)
+	{
+		for(int i=0;i<m_Parasites.Length;i++)
+		{
+			if(m_Parasites[i].m_Alive)
+				m_Parasites[i].TryRemove(_type);
+		}
 	}
 
 	void AddInfection()
-	{}
+	{
+		for(int i=0;i<m_Parasites.Length;i++)
+		{
+			if(!m_Parasites[i].m_Alive)
+			{
+				m_Parasites[i].Spawn(GlobalShit.GetRandomParasiteWave());
+				return;
+			}
+		}
+	}
 
 	#endregion
 
 	#region STATE_ALIVE
 	IEnumerator Alive()
 	{
-		m_Visual.SetVisible(true);
 		SetLevel(0);
 		m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
-		while(m_LastReceivedWave!=m_WaveNeeded)
+		m_Visual.SetOrbitVisible(true);
+		m_Visual.m_Orbit.SetIcon(m_WakeUpWaveSequence);
+		while(m_SequenceCount<m_WakeUpWaveSequence.Length)
 		{
+			if(m_LastReceivedWave==m_WaveNeeded)
+			{
+				m_LastReceivedWave=GlobalShit.WaveType.None;
+				m_SequenceCount++;
+				if(m_SequenceCount<m_WakeUpWaveSequence.Length)
+				{
+					m_Visual.SequenceProgress(m_SequenceCount);
+					m_WaveNeeded=m_WakeUpWaveSequence[m_SequenceCount];	
+				}
+			}
 			yield return null;
 		}
-		m_LastReceivedWave=GlobalShit.WaveType.None;
-		m_WaveNeeded=GlobalShit.WaveType.None;
 		m_State=UnitAIState.Awake;
 		yield return null;
 	}
@@ -154,6 +207,7 @@ public class UnitElder : UnitAI {
 			{
 				m_LastReceivedWave=GlobalShit.WaveType.None;
 				m_SequenceCount++;
+				m_Visual.SequenceProgress(m_SequenceCount);
 				if(m_SequenceCount==m_EvolvingWaveSequence.Length)
 				{
 					IncreaseLevel();
@@ -161,9 +215,15 @@ public class UnitElder : UnitAI {
 					m_SequenceCount=0;
 
 					if(IsMaxLevel())
+					{
 						m_Visual.SetOrbitVisible(false);
+					}
 					else
+					{
 						m_WaveNeeded=m_EvolvingWaveSequence[m_SequenceCount];
+						m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
+						m_Visual.SequenceProgress(m_SequenceCount);
+					}
 
 					m_Visual.DisplayCooldown(m_EvolvingCooldown);
 					yield return new WaitForSeconds(m_EvolvingCooldown);
@@ -213,6 +273,8 @@ public class UnitElder : UnitAI {
 	{
 		agent.speed = m_WalkSpeed;
 		agent.updateRotation = false;
+
+		gameObject.layer = 9;
 
 		Vector3 lastKnowingTargetPosition = m_Player.transform.position;
 
