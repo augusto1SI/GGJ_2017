@@ -28,7 +28,10 @@ public class UnitElder : UnitAI {
 
 	private int m_SequenceCount=0;
 
-	private float m_EvolvingCooldown=3;
+	public float m_EvolvingCooldown=30;
+
+    public AudioSource m_AudioAffected;
+    public AudioSource m_AudioAwake;
 
 	// Use this for initialization
 	public override void Start () {
@@ -69,13 +72,18 @@ public class UnitElder : UnitAI {
 			{
 				case UnitAIState.Inert:
 					yield return StartCoroutine(Inert());
+                    m_AudioAffected.Play();
 				break;
 				case UnitAIState.Alive:
+                    m_AudioAffected.Play();
+                    m_AudioAwake.Stop();
 					m_WaveNeeded=m_WakeUpWaveSequence[0];
 					m_SequenceCount=0;
 					yield return StartCoroutine(Alive());
 				break;
 				case UnitAIState.Awake:
+                    m_AudioAffected.Stop();
+                    m_AudioAwake.Play();
 					m_WaveNeeded=m_EvolvingWaveSequence[0];
 					m_SequenceCount=0;
 					yield return StartCoroutine(Awaken());

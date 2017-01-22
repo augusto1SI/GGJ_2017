@@ -26,7 +26,7 @@ public class UnitPlayer : Unit
 
     private Vector3 m_LastMousePosition;
     private float m_DistanceTolerance = 1f;
-    private float m_MaxAccel = 25f;
+    private float m_MaxAccel = 15f;
 
     public Transform m_VisualPlayer;
     private Vector3 m_RotationLeft = new Vector3(-90, -35, 0);
@@ -101,7 +101,7 @@ public class UnitPlayer : Unit
 		//move.Normalize();
 
 		move*=m_MaxAccel;
-
+        move.y = 0;
 		move=transform.TransformDirection(move);
 
 		//jUMP AND GRAVITY CODE

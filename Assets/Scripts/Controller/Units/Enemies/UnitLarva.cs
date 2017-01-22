@@ -24,7 +24,7 @@ public class UnitLarva : UnitAI {
 
 	private int m_SequenceCount=0;
 
-	private float m_EvolvingCooldown=3;
+	public float m_EvolvingCooldown=15;
 
 	private Vector3 m_InitialPosition;
 
