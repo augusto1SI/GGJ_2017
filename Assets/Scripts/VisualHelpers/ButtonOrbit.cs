@@ -10,6 +10,7 @@ public class ButtonOrbit : MonoBehaviour {
 
 	[SerializeField]
 	private bool m_Orbiting=false;
+    private float m_Speed = 10f;
 
 	void Awake()
 	{
@@ -35,7 +36,7 @@ public class ButtonOrbit : MonoBehaviour {
 	{
 		if(m_Orbiting)
 		{
-			m_Pivot.Rotate(m_Direction,Space.Self);
+			m_Pivot.Rotate(m_Direction*Time.deltaTime*m_Speed,Space.Self);
 			for(int i=0;i<m_BtnRenderers.Length;i++)
 			{
 				m_BtnRenderers[i].transform.up = Vector3.forward;
