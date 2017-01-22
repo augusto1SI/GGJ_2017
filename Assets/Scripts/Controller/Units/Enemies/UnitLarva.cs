@@ -121,7 +121,7 @@ public class UnitLarva : UnitAI {
 	{
 		m_Visual.SetVisible(true);
 		SetLevel(0);
-		m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
+//		m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
 		while(m_LastReceivedWave!=m_WaveNeeded)
 		{
 			yield return null;
@@ -137,7 +137,7 @@ public class UnitLarva : UnitAI {
 	IEnumerator Awaken()
 	{
 		SetLevel(1);
-		m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
+//		m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
 		m_Visual.SetOrbitVisible(true);
 		m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
 		while(!IsMaxLevel())
@@ -151,7 +151,7 @@ public class UnitLarva : UnitAI {
 				if(m_SequenceCount==m_EvolvingWaveSequence.Length)
 				{
 					IncreaseLevel();
-					m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
+	//				m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
 					m_SequenceCount=0;
 
 
