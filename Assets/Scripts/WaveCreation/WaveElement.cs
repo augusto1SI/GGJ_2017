@@ -34,7 +34,6 @@ public class WaveElement : MonoBehaviour
         //TODO: Fill this with whatever is necessary
 		if(_col.GetComponent<UnitAI>()!=null)
 		{
-			Debug.Log("SETTING UP WAVETYPE: " + m_WaveTypeID);
 			_col.GetComponent<UnitAI>().m_LastReceivedWave=(GlobalShit.WaveType)m_WaveTypeID;
 		}
     }
