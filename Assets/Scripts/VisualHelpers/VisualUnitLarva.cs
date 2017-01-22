@@ -6,7 +6,6 @@ public class VisualUnitLarva : VisualUnit {
 
 	public SpriteRenderer m_Renderer;
 	public ButtonOrbit m_Orbit;
-	public Sprite[] tempSprites;
 	public Cooldown m_Cooldown;
 
 
@@ -22,15 +21,11 @@ public class VisualUnitLarva : VisualUnit {
 		m_Cooldown=CooldownPool.Instance.GetLarvaCooldown();
 	}
 
-	public void SetLevelFeedback(byte _level,GlobalShit.WaveType _type)
-	{
-		m_Renderer.sprite = tempSprites[_level];
-	}
-
 	public override void SetVisible (bool _visible)
 	{
 		base.SetVisible (_visible);
-
+		if(_visible)
+			m_Renderer.color=Color.white;
 		m_Renderer.enabled=_visible;
 	}
 

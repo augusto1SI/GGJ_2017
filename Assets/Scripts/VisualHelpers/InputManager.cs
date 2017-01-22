@@ -18,6 +18,14 @@ public class InputManager : MonoBehaviour {
 
 		if(Input.GetButtonDown("Fire1"))
 		{
+
+			if(!GameManager.Instance.OnGame)
+				GameManager.Instance.StartGame();
+
+			if(GameManager.Instance.OnGameOver)
+				GameManager.Instance.RestartGame();
+
+
 			RaycastHit hit; 
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
 			if ( Physics.Raycast (ray,out hit,100.0f)) 
