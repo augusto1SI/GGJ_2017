@@ -11,7 +11,11 @@ public class WavePool : MonoBehaviour
         {
             if(m_Waves[i].m_WaveTypeID == _type)
             {
-                if (m_Waves[i].TryDoWave()) return true;
+                if (m_Waves[i].TryDoWave())
+                {
+                    AudioManager.Instance.PlaySFX((AudioCore.SFXID)_type - 1);
+                    return true;
+                }
             }
         }
 

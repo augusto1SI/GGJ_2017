@@ -3,7 +3,15 @@ using System.Collections;
 
 public class InputManager : MonoBehaviour {
 
-	
+    void Awake()
+    {
+        AudioManager.Instance.Initialization();
+    }
+
+	void Start()
+    {
+        AudioManager.Instance.PlayMusic(AudioCore.MusicID.BGMusic_GGJ_Track01);
+    }
 	// Update is called once per frame
 	void Update () 
 	{
