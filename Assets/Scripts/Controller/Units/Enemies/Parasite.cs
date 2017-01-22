@@ -9,7 +9,7 @@ public class Parasite : MonoBehaviour {
 
 	public bool m_Alive=false;
 
-	void Start()
+	void Awake()
 	{
 		m_Renderer=GetComponent<SpriteRenderer>();
 		m_Orbit=GetComponentInChildren<ButtonOrbit>();

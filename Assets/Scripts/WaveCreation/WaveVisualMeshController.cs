@@ -9,10 +9,12 @@ public class WaveVisualMeshController : MonoBehaviour
     private float m_Length;
     private bool m_ActiveVisuals;
 
+    private float m_Offset = 0.4f;
+
 	public void Initialize (float _animLength)
     {
         m_ActiveVisuals = false;
-        m_Length = _animLength;
+        m_Length = _animLength - m_Offset;
 
         m_WaveRenderer.enabled = false;
 	}
