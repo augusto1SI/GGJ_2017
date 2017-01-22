@@ -7,6 +7,8 @@ public class UnitPlayer : Unit
 
 	private CharacterController control;
 
+	public SpriteAnim m_Anim;
+
 	private byte m_MaxFollowers=10;
 	private byte m_CurrentFollowers=0;
 
@@ -37,6 +39,10 @@ public class UnitPlayer : Unit
 		m_ButtonB.OnClicked += ClickButtonB;
 		m_ButtonC.OnClicked += ClickButtonC;
 
+		if(m_Anim==null)
+			m_Anim=GetComponentInChildren<SpriteAnim>();
+
+		m_Anim.Play(0);
 
 		if(!control)
 		{
@@ -100,20 +106,20 @@ public class UnitPlayer : Unit
 
 	void ClickButtonA()
 	{
-		Debug.Log("Button A Pressed");
 		ShootWave(GlobalShit.WaveType.TypeA);
+		m_Anim.Play(1);
 	}
 
 	void ClickButtonB()
 	{
-		Debug.Log("Button B Pressed");
 		ShootWave(GlobalShit.WaveType.TypeB);
+		m_Anim.Play(2);
 	}
 
 	void ClickButtonC()
 	{
-		Debug.Log("Button C Pressed");
 		ShootWave(GlobalShit.WaveType.TypeC);
+		m_Anim.Play(3);
 	}
 
 

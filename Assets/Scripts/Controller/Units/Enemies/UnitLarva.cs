@@ -13,6 +13,8 @@ public class UnitLarva : UnitAI {
 	private byte m_Level=0;
 	private byte m_MaxLevel=3;
 
+	public int m_Tier=-1;
+
 	private int m_Uses=5;
 	private int m_RemainingUses;
 
@@ -23,6 +25,10 @@ public class UnitLarva : UnitAI {
 	private int m_SequenceCount=0;
 
 	private float m_EvolvingCooldown=3;
+
+	private Vector3 m_InitialPosition;
+
+	private SpriteAnim m_Anim;
 
 	// Use this for initialization
 	public override void Start () {
@@ -40,7 +46,11 @@ public class UnitLarva : UnitAI {
 
 		m_ClickReceiver.OnClicked += OnClick;
 
+		m_Anim = GetComponentInChildren<SpriteAnim>();
+
 		agent.angularSpeed = m_TurnSpeed;
+
+		m_InitialPosition=transform.position;
 
 		StartCoroutine(Think());
 	}
@@ -60,14 +70,20 @@ public class UnitLarva : UnitAI {
 			switch(m_State)
 			{
 				case UnitAIState.Inert:
+					m_UseWaveType=GlobalShit.GetRandomLarvaWave(m_Tier);
+					m_EvolvingWaveSequence=null;
+					m_EvolvingWaveSequence=GlobalShit.GetEvolvingLarvaSequence(m_UseWaveType);
+					m_Anim.m_Library = ArtDispenser.Instance.GetAnimLibrary(m_UseWaveType);
 					yield return StartCoroutine(Inert());
 				break;
 				case UnitAIState.Alive:
 					m_WaveNeeded=GlobalShit.GetRandomBasicWave();
+					m_Anim.Play(0);
 					yield return StartCoroutine(Alive());
 				break;
 				case UnitAIState.Awake:
 					m_WaveNeeded=m_EvolvingWaveSequence[0];
+					m_Anim.Play(1);
 					m_SequenceCount=0;
 					yield return StartCoroutine(Awaken());
 				break;
@@ -76,7 +92,7 @@ public class UnitLarva : UnitAI {
 					yield return StartCoroutine(Follow());
 				break;
 				case UnitAIState.Dead:
-					yield return null;
+					yield return StartCoroutine(Die());
 				break;
 			}
 			yield return null;
@@ -135,19 +151,24 @@ public class UnitLarva : UnitAI {
 					m_Visual.SetLevelFeedback(m_Level,m_UseWaveType);
 					m_SequenceCount=0;
 
-					if(IsMaxLevel())
-					{
-						m_Visual.SetOrbitVisible(false);
-					}
+
+					m_Visual.SetOrbitVisible(false);
+					if(!IsMaxLevel())
+						m_Anim.Play(2);
 					else
-					{
-						m_WaveNeeded=m_EvolvingWaveSequence[m_SequenceCount];
-						m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
-						m_Visual.SequenceProgress(m_SequenceCount);
-					}
+						m_Anim.Play(3);
 
 					m_Visual.DisplayCooldown(m_EvolvingCooldown);
 					yield return new WaitForSeconds(m_EvolvingCooldown);
+
+					if(!IsMaxLevel())
+					{
+						
+						m_WaveNeeded=m_EvolvingWaveSequence[m_SequenceCount];
+						m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
+						m_Visual.SequenceProgress(m_SequenceCount);
+						m_Visual.m_Orbit.Orbit(true);
+					}
 				}
 				else
 				{
@@ -197,7 +218,7 @@ public class UnitLarva : UnitAI {
 
 		Vector3 lastKnowingTargetPosition = m_Player.transform.position;
 
-		while(m_Uses>0)
+		while(m_RemainingUses>0)
 		{
 
 			lastKnowingTargetPosition = m_Player.transform.position;
@@ -238,10 +259,19 @@ public class UnitLarva : UnitAI {
 		if(m_RemainingUses==0)
 		{
 			m_State=UnitAIState.Dead;		
-			m_Visual.SetVisible(false);
+			m_Anim.Play(4);
 			//TODO: Inform the player that this larva has been carried by the clown!!
 		}
 			
+	}
+
+	IEnumerator Die()
+	{
+		agent.Stop();
+		yield return new WaitForSeconds(2);
+		m_Visual.SetVisible(false);
+		transform.position=m_InitialPosition;
+		m_State=UnitAIState.Inert;
 	}
 	#endregion
 
