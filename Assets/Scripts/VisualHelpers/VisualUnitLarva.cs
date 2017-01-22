@@ -46,4 +46,9 @@ public class VisualUnitLarva : VisualUnit {
 	{
 		m_Cooldown.DisplayCooldown(_delay,m_Orbit.transform.position);
 	}
+
+	public void SequenceProgress(int _progress)
+	{
+		m_Orbit.IgnoreIconsLowerThan(_progress);
+	}
 }
