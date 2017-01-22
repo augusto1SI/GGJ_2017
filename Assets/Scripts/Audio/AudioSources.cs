@@ -365,9 +365,9 @@ public class AudioSources : AudioCore
 	/// </summary>
 	/// <param name="_toPlay">Sound effect to play.</param>
 	/// <param name="_pitch">Pitch of the sound effect to play.</param>
-    public void SfxPlay(GlobalShit.WaveType _toPlay, float _pitch)
+    public void SfxPlay(SFXID _toPlay, float _pitch)
 	{
-        if (_toPlay == GlobalShit.WaveType.None || _toPlay == GlobalShit.WaveType.MAX) return;
+        if (_toPlay == SFXID.None) return;
 
 		int _id = GetFreeSFXID;
 

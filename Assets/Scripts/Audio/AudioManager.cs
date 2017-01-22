@@ -36,7 +36,7 @@ public class AudioManager : AudioCore
 				Debug.Log("MusicID: " + ((MusicID)i).ToString() + " corresponds to " + AudioSources.Instance.m_Music[i].name);
 			}
 
-            for (int i = 0; i < (int)GlobalShit.WaveType.MAX - 1; ++i)
+            for (int i = 0; i < (int)SFXID.None - 1; ++i)
 			{
 				Debug.Log("SFXID: " + ((MusicID)i).ToString() + " corresponds to " + AudioSources.Instance.m_SFX[i].name);
 			}
@@ -111,7 +111,7 @@ public class AudioManager : AudioCore
 	/// </summary>
 	/// <param name="_toPlay">ID of the sound effect to play.</param>
 	/// <param name="_pitch">A varied pitch in case the sound effect needs to sound differently.</param>
-	public void PlaySFX(GlobalShit.WaveType _toPlay, float _pitch = 1)
+	public void PlaySFX(SFXID _toPlay, float _pitch = 1)
 	{
 		AudioSources.Instance.SfxPlay (_toPlay, _pitch);
 	}

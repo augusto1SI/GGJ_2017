@@ -11,6 +11,25 @@ public class AudioCore : MonoBehaviour
 		None
 	};
 
+    public enum SFXID
+    {
+        TYPEA,
+        TYPEB,
+        TYPEC,
+        TYPED,
+        TYPEE,
+        TYPEF,
+        TYPEG,
+        TYPEH,
+        TYPEI,
+        TYPEJ,
+        TYPEK,
+        TYPEL,
+        TYPEM,
+        TYPEN,
+        None
+    }
+
 	public enum LoopSFXID
 	{
 		None
