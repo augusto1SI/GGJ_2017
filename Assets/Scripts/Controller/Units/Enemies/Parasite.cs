@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Parasite : MonoBehaviour {
+public class Parasite : MonoBehaviour
+{
 
 	public SpriteRenderer m_Renderer;
 	public ButtonOrbit m_Orbit;
@@ -17,6 +18,14 @@ public class Parasite : MonoBehaviour {
 		m_Anim=GetComponentInChildren<SpriteAnim>();
 
 
+
+		Vector3 _temp = transform.localPosition;
+		_temp.z = -0.5f;
+		transform.localPosition = _temp;
+
+		_temp = m_Orbit.transform.localPosition;
+		_temp.z = -2.5f;
+		m_Orbit.transform.localPosition = _temp;
 	}
 
 	public void Spawn(GlobalShit.WaveType _type)

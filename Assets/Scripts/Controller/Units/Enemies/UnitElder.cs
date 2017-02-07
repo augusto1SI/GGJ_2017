@@ -38,7 +38,8 @@ public class UnitElder : UnitAI {
 	public SpriteAnim m_Anim;
 
 	// Use this for initialization
-	public override void Start () {
+	public override void Start ()
+	{
 		base.Start ();
 
 		m_Player=FindObjectOfType<UnitPlayer>();

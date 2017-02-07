@@ -74,16 +74,12 @@ public static class GlobalShit {
 		{
 			case 0:
 				return m_LarvaWave[Random.Range(0,3)];
-			break;
 			case 1:
 				return m_LarvaWave[Random.Range(3,6)];
-			break;
 			case 2:
 				return m_LarvaWave[Random.Range(6,9)];
-			break;
 			default:
 				return m_LarvaWave[Random.Range(0,m_LarvaWave.Length)];
-			break;
 		}
 	}
 
@@ -93,31 +89,22 @@ public static class GlobalShit {
 		{
 			case WaveType.TypeD:
 				return m_EvolvingSequenceTypeD;
-			break;
 			case WaveType.TypeE:
 				return m_EvolvingSequenceTypeE;
-			break;
 			case WaveType.TypeF:
 				return m_EvolvingSequenceTypeF;
-			break;
 			case WaveType.TypeG:
 				return m_EvolvingSequenceTypeG;
-			break;
 			case WaveType.TypeH:
 				return m_EvolvingSequenceTypeH;
-			break;
 			case WaveType.TypeI:
 				return m_EvolvingSequenceTypeI;
-			break;
 			case WaveType.TypeJ:
 				return m_EvolvingSequenceTypeJ;
-			break;
 			case WaveType.TypeK:
 				return m_EvolvingSequenceTypeK;
-			break;
 			case WaveType.TypeL:
 				return m_EvolvingSequenceTypeL;
-			break;
 		}
 		return m_EvolvingSequenceTypeD;
 	}

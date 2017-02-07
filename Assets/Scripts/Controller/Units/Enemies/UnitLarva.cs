@@ -50,6 +50,10 @@ public class UnitLarva : UnitAI {
 
 		agent.angularSpeed = m_TurnSpeed;
 
+		Vector3 _temp = m_Visual.transform.localPosition;
+		_temp.y = 2.5f;
+		m_Visual.transform.localPosition = _temp;
+
 		m_InitialPosition=transform.position;
 
 		StartCoroutine(Think());

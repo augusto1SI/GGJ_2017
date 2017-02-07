@@ -113,7 +113,6 @@ public class UnitMegaElder : UnitAI {
 		{
 			yield return null;
 		}
-		yield return null;
 	}
 	#endregion
 
