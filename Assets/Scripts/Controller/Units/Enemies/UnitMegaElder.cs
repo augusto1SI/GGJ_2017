@@ -12,7 +12,6 @@ public class UnitMegaElder : UnitAI {
 	private int m_SequenceCount=0;
 
     public AudioSource m_AudioAwake;
-    public AudioSource m_AudioAffected;
 
 	// Use this for initialization
 	public override void Start () {
@@ -25,6 +24,8 @@ public class UnitMegaElder : UnitAI {
 			worldMask =1 << LayerMask.NameToLayer ("World");
 
 		StartCoroutine(Think());
+
+		m_AudioAwake.Play ();
 	}
 
 
@@ -42,19 +43,14 @@ public class UnitMegaElder : UnitAI {
 			switch(m_State)
 			{
 				case UnitAIState.Inert:
-                    m_AudioAffected.Play();
 					yield return StartCoroutine(Inert());
 				break;
 				case UnitAIState.Alive:
-                    m_AudioAffected.Play();
-                    m_AudioAwake.Stop();
 					m_WaveNeeded=m_WakeUpWaveSequence[0];
 					m_SequenceCount=0;
 					yield return StartCoroutine(Alive());
 				break;
 				case UnitAIState.Awake:
-                    m_AudioAffected.Stop();
-                    m_AudioAwake.Play();
 					GameManager.Instance.GameOver();
 					yield return StartCoroutine(Awaken());
 				break;

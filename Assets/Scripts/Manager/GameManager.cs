@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public SpriteAnim m_Anim;
+	public SpriteAnim m_ClickBtn;
 
 	void Awake () {
 		_instance=this;
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour {
 	{
 		OnGame=true;
 		m_Anim.Play(1);
+		m_ClickBtn.Play (1);
 	}
 
 	public void GameOver()

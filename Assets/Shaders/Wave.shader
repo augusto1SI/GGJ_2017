@@ -17,48 +17,6 @@
 	}
 	SubShader
 	{
-		Tags
-		{
-			"RenderType"="Transparent"
-			"Queue"="Transparent"
-		}
-		LOD 200
-		Blend SrcAlpha OneMinusSrcAlpha
-		
-		CGPROGRAM
-		#pragma surface surf Standard vertex:vert alpha:blend
-		#pragma target 3.0
-
-		sampler2D _GlowTex;
-		sampler2D _NoiseTex;
-		fixed _NoiseAmount;
-		fixed _NoiseOffset;
-		half _NoiseTile;
-
-		struct Input
-		{
-			float2 uv_GlowTex;
-		};
-
-		void vert (inout appdata_full v)
-		{
-			fixed surface = (fixed)tex2Dlod (_NoiseTex, float4((v.texcoord.x * _NoiseTile) - _NoiseOffset, v.texcoord.y, 0, 0)).x;
-			surface *= 2;
-			surface -= 1;
-			v.vertex.xyz += v.normal * _NoiseAmount * surface;
-		}
-
-		fixed4 _ColorGlow1;
-		fixed4 _ColorGlow2;
-
-		void surf (Input IN, inout SurfaceOutputStandard o)
-		{
-			half3 _g = tex2D (_GlowTex, IN.uv_GlowTex);
-			half _red = clamp(1,0,_g.r - _g.g);
-			o.Emission = (_ColorGlow1.rgb*(1-_g.g)) + (_ColorGlow2 * _g.g);
-			o.Alpha = clamp(1,0,_g.r+_g.g);
-		}
-		ENDCG
 
 		Tags
 		{
@@ -106,6 +64,49 @@
 			half3 _ColorSub = _Color2.rgb * _invMain;
 			o.Emission = _ColorMain + _ColorSub;
 			o.Alpha = _a;
+		}
+		ENDCG
+		
+		Tags
+		{
+			"RenderType"="Transparent"
+			"Queue"="Transparent"
+		}
+		LOD 200
+		Blend SrcAlpha OneMinusSrcAlpha
+		
+		CGPROGRAM
+		#pragma surface surf Standard vertex:vert alpha:blend
+		#pragma target 3.0
+
+		sampler2D _GlowTex;
+		sampler2D _NoiseTex;
+		fixed _NoiseAmount;
+		fixed _NoiseOffset;
+		half _NoiseTile;
+
+		struct Input
+		{
+			float2 uv_GlowTex;
+		};
+
+		void vert (inout appdata_full v)
+		{
+			fixed surface = (fixed)tex2Dlod (_NoiseTex, float4((v.texcoord.x * _NoiseTile) - _NoiseOffset, v.texcoord.y, 0, 0)).x;
+			surface *= 2;
+			surface -= 1;
+			v.vertex.xyz += v.normal * _NoiseAmount * surface;
+		}
+
+		fixed4 _ColorGlow1;
+		fixed4 _ColorGlow2;
+
+		void surf (Input IN, inout SurfaceOutputStandard o)
+		{
+			half3 _g = tex2D (_GlowTex, IN.uv_GlowTex);
+			half _red = clamp(1,0,_g.r - _g.g);
+			o.Emission = (_ColorGlow1.rgb*(1-_g.g)) + (_ColorGlow2 * _g.g);
+			o.Alpha = clamp(1,0,_g.r+_g.g);
 		}
 		ENDCG
 	}

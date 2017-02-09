@@ -80,8 +80,8 @@ public class UnitElder : UnitAI {
 				case UnitAIState.Inert:
 					m_Anim.m_Library = ArtDispenser.Instance.GetAnimLibrary(m_UseWaveType);
 					m_Anim.Play(0);
-					yield return StartCoroutine(Inert());
                     m_AudioAffected.Play();
+					yield return StartCoroutine(Inert());
 				break;
 				case UnitAIState.Alive:
                     m_AudioAffected.Play();

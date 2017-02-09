@@ -9,6 +9,9 @@ public class SpriteAnim : MonoBehaviour {
 	public ImageScale m_SpriteScale;
 	public SpriteColor m_SpriteColor;
 
+	public bool m_PlayOnAwake;
+	public int m_ToPlayOnAwake;
+
 	private int m_AnimImmediateID;
 	private int m_AnimImmediateRounds;
 
@@ -20,6 +23,12 @@ public class SpriteAnim : MonoBehaviour {
 	private byte m_Key=0;
 
 	private bool m_Paused;
+
+	void Start()
+	{
+		if (m_PlayOnAwake)
+			Play (m_ToPlayOnAwake);
+	}
 
 	//play and return the duration for the
 	//first key frame appears
@@ -168,19 +177,19 @@ public class SpriteAnim : MonoBehaviour {
 			//Tint
 			if(m_Library.ShouldTint(_animID,_goalID))
 			{
-				m_SpriteColor.TintTo(m_Library.GetColorFrom(_animID,_goalID),m_Library.GetColorTo(_animID,_goalID),GetAnimDuration(_animID));
+				m_SpriteColor.TintTo(m_Library.GetColorFrom(_animID,_goalID),m_Library.GetColorTo(_animID,_goalID),m_Library.GetFrameDuration(_animID,_goalID));
 			}
 
 			//Displacement
 			if(m_Library.ShouldMove(_animID,_goalID)&&m_SpriteMove!=null)
 			{
-				m_SpriteMove.MoveTo(m_Library.GetOffsetFrom(_animID,_goalID),m_Library.GetOffsetTo(_animID,_goalID),GetAnimDuration(_animID));
+				m_SpriteMove.MoveTo(m_Library.GetOffsetFrom(_animID,_goalID),m_Library.GetOffsetTo(_animID,_goalID),m_Library.GetFrameDuration(_animID,_goalID));
 			}
 
 			//Scaling
 			if(m_Library.ShouldScale(_animID,_goalID)&&m_SpriteScale!=null)
 			{
-				m_SpriteScale.ScaleTo(m_Library.GetScaleFrom(_animID,_goalID),m_Library.GetScaleTo(_animID,_goalID),GetAnimDuration(_animID));
+				m_SpriteScale.ScaleTo(m_Library.GetScaleFrom(_animID,_goalID),m_Library.GetScaleTo(_animID,_goalID),m_Library.GetFrameDuration(_animID,_goalID));
 			}
 				
 			return m_Library.GetFrameDuration(_animID,_goalID);

@@ -1,4 +1,4 @@
-﻿Shader "Custom/WateryAdditive"
+﻿Shader "Custom/WateryMultiplicative"
 {
 	Properties
 	{
@@ -16,7 +16,7 @@
 			"Queue"="Transparent"
 		}
 		LOD 200
-		Blend One One
+		Blend DstColor Zero
 		
 		CGPROGRAM
 		#pragma surface surf Standard alpha:Blend
@@ -38,7 +38,7 @@
 			half _radial = tex2D (_RadialGradient, IN.uv_RadialGradient).x;
 			half _clouds = tex2D (_CloudTexture, IN.uv_RadialGradient).x;
 			half _invClouds = 1 - _clouds;
-			o.Emission = ((_clouds * _Color1.rgb) + (_invClouds * _Color2.rgb)) * _radial;
+			o.Emission = (((_clouds * _Color1.rgb) + (_invClouds * _Color2.rgb)) * _radial) + (1-_radial);
 		}
 		ENDCG
 	}
