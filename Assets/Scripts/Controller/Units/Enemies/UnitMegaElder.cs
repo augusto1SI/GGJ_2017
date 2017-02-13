@@ -12,6 +12,7 @@ public class UnitMegaElder : UnitAI {
 	private int m_SequenceCount=0;
 
     public AudioSource m_AudioAwake;
+	public ParticleSystem m_Idle;
 
 	// Use this for initialization
 	public override void Start () {
@@ -26,6 +27,8 @@ public class UnitMegaElder : UnitAI {
 		StartCoroutine(Think());
 
 		m_AudioAwake.Play ();
+
+		m_Idle.Play ();
 	}
 
 

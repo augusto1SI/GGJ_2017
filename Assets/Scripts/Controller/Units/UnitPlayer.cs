@@ -19,16 +19,16 @@ public class UnitPlayer : Unit
 
     private Vector3 m_LastTouchPosition;
 
-	private float m_SpeedIncrement = 0.5f; //1 over Time to reach max speed = this value (for Lerp purposes)
+	private float m_SpeedIncrement = 2f; //1 over Time to reach max speed = this value (for Lerp purposes)
 	private float m_SpeedDecrement = 0.7f; //1 over Time to reach max speed = this value (for Lerp purposes)
 
-	private float m_DistanceIgnore = 1f;
-	private float m_MinDistance = 3f;
+	/*private float m_DistanceIgnore = 0.5f;
+	private float m_MinDistance = 1f;
 	private float m_MaxDistance = 6f;
-	private float m_CurrentDistance;
+	private float m_CurrentDistance;*/
 
-	private float m_MaxSpeedAtMinDistance = 3f;
-	private float m_MaxSpeedAtMaxDistance = 8f;
+	//private float m_MaxSpeedAtMinDistance = 3f;
+	//private float m_MaxSpeedAtMaxDistance = 8f;
 	private float m_SpeedTimeLerp;
 	private float m_SpeedDistanceLerp;
 	private float m_SpeedRadiusLerp;
@@ -38,16 +38,16 @@ public class UnitPlayer : Unit
     public Transform m_VisualPlayer;
     private Vector3 m_RotationLeft = new Vector3(-90, -35, 0);
     private Vector3 m_RotationRight = new Vector3(-90, 35, 0);
-	private Vector3 m_DifferenceVector;
-	private Vector3 m_MovementDirection;
-	private Vector3 m_FinalMovementSpeed;
+	//private Vector3 m_DifferenceVector;
+	//private Vector3 m_MovementDirection;
+	//private Vector3 m_FinalMovementSpeed;
 	private Vector3 m_FinalMovementSpeedNoDelta;
 	private Vector3 m_NormalizedFinalSpeed;
-	private Vector3 m_TempPosition;
+	//private Vector3 m_TempPosition;
 
 	private Vector3 m_ProbablePosition;
-	private float m_MaxRadius = 70f;
-	private float m_MinRadius = 60f;
+	//private float m_MaxRadius = 70f;
+	//private float m_MinRadius = 60f;
 	private float m_PositionDistanceFromCenter;
 	private Vector3 m_NewPosition;
 	private Vector3 m_RepositionVector;
@@ -67,6 +67,7 @@ public class UnitPlayer : Unit
 	public ParticleSystem m_VariableTrail;
 	private float m_TrailParticlesMaxSize;
 	private Color m_TrailColor;
+	public Movement m_Movement;
 
 	public override void Start ()
 	{
@@ -92,6 +93,7 @@ public class UnitPlayer : Unit
         m_LastTouchPosition = Vector3.zero;
 		m_InTouch = false;
 		m_IdleParticles.Play ();
+		//m_MovementDirection = Vector3.zero;
 	}
 
 	/*GUIStyle _style = new GUIStyle();
@@ -107,8 +109,6 @@ public class UnitPlayer : Unit
 		//TURN CODE
 		transform.Rotate(0f,Input.GetAxis("Mouse X") * m_TurnSpeed * Time.deltaTime, 0f);
 		m_Text.text = (1.0f / Time.smoothDeltaTime).ToString ();
-
-		m_MovementDirection = Vector3.zero;
 		//MOVE CODE
 #if UNITY_IOS
 		if(Input.touchCount > 0)
@@ -133,11 +133,10 @@ public class UnitPlayer : Unit
 		if(Input.GetMouseButtonUp(0))
 			m_InTouch = false;
 #endif
-		m_DifferenceVector = m_LastTouchPosition - m_TempPosition;
-		m_CurrentDistance = Vector3.Magnitude (m_DifferenceVector);
-		m_MovementDirection = Vector3.Normalize (m_DifferenceVector);
+		//m_DifferenceVector = m_LastTouchPosition - m_TempPosition;
+		//m_CurrentDistance = Vector3.Magnitude (m_DifferenceVector);
 		
-		m_SpeedDistanceLerp = (Mathf.Max(m_MinDistance, Mathf.Min(m_MaxDistance, m_CurrentDistance)) - m_MinDistance)/(m_MaxDistance - m_MinDistance);
+		/*m_SpeedDistanceLerp = (Mathf.Max(m_MinDistance, Mathf.Min(m_MaxDistance, m_CurrentDistance)) - m_MinDistance)/(m_MaxDistance - m_MinDistance);
 		m_SpeedRadiusLerp = 1f - Mathf.Min(0.9f, ((Mathf.Max(m_MinRadius, Mathf.Min(m_MaxRadius, m_TempPosition.magnitude)) - m_MinRadius)/(m_MaxRadius - m_MinRadius)));
 		m_LerpIgnore = (Mathf.Max(m_DistanceIgnore, Mathf.Min(m_MinDistance, m_CurrentDistance)) - m_DistanceIgnore)/(m_MinDistance - m_DistanceIgnore);
 
@@ -176,7 +175,21 @@ public class UnitPlayer : Unit
 
 			if(MoveCallback != null)
 				MoveCallback(transform.position);
-		}
+		}*/
+		
+		m_TrailColor.a = TestTouchRadii.MinMaxLerp;
+		m_VariableTrail.startSize = m_TrailParticlesMaxSize * m_TrailColor.a;
+		m_VariableTrail.startColor = m_TrailColor;
+		
+
+		//m_SpeedDistanceLerp = (Mathf.Max(m_MinDistance, Mathf.Min(m_MaxDistance, m_CurrentDistance)) - m_MinDistance)/(m_MaxDistance - m_MinDistance);
+		m_VisualPlayer.eulerAngles = Vector3.Lerp(m_RotationLeft, m_RotationRight, (m_Movement.GetNormalizedXDirection + 1) * 0.5f);
+		m_Movement.Move (m_InTouch, m_LastTouchPosition);
+		//m_TempPosition = transform.position;
+
+		if(MoveCallback != null)
+			MoveCallback(transform.position);
+
 		base.Update();
 	}
 

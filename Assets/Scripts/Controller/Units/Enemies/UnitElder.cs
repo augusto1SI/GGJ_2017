@@ -37,6 +37,8 @@ public class UnitElder : UnitAI {
 
 	public SpriteAnim m_Anim;
 
+	public ParticleSystem m_Idle;
+
 	// Use this for initialization
 	public override void Start ()
 	{
@@ -61,6 +63,8 @@ public class UnitElder : UnitAI {
 		StartCoroutine(Think());
 
 		m_InitialPosition=transform.position;
+
+		m_Idle.Play ();
 	}
 
 

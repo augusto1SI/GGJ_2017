@@ -11,7 +11,7 @@ public class UnitLarva : UnitAI {
 	private ButtonReceiver m_ClickReceiver;
 
 	private byte m_Level=0;
-	private byte m_MaxLevel=3;
+	private byte m_MaxLevel=2;
 
 	public int m_Tier=-1;
 
@@ -29,6 +29,10 @@ public class UnitLarva : UnitAI {
 	private Vector3 m_InitialPosition;
 
 	private SpriteAnim m_Anim;
+
+	public ParticleSystem m_ParticleEvolution;
+	public ParticleSystem m_ParticleEvolving;
+	private float m_ParticleTimeOffset = 0.1f;
 
 	// Use this for initialization
 	public override void Start () {
@@ -160,13 +164,15 @@ public class UnitLarva : UnitAI {
 
 
 					m_Visual.SetOrbitVisible(false);
-					if(!IsMaxLevel())
-						m_Anim.Play(2);
-					else
-						m_Anim.Play(3);
 
 					m_Visual.DisplayCooldown(m_EvolvingCooldown);
-					yield return new WaitForSeconds(m_EvolvingCooldown);
+					m_ParticleEvolution.Play(true);
+					yield return new WaitForSeconds (m_ParticleTimeOffset);
+					m_Anim.Play(2);
+					m_ParticleEvolving.Play();
+					yield return new WaitForSeconds (m_EvolvingCooldown-m_ParticleTimeOffset);
+
+					m_ParticleEvolving.Stop();
 
 					if(!IsMaxLevel())
 					{
@@ -175,6 +181,10 @@ public class UnitLarva : UnitAI {
 						m_Visual.m_Orbit.SetIcon(m_EvolvingWaveSequence);
 						m_Visual.SequenceProgress(m_SequenceCount);
 						m_Visual.m_Orbit.Orbit(true);
+					}
+					else
+					{
+						m_Anim.Play(3);
 					}
 				}
 				else
