@@ -23,6 +23,7 @@ public class SpriteAnim : MonoBehaviour {
 	private byte m_Key=0;
 
 	private bool m_Paused;
+	public ParticleSystem m_Particles;
 
 	void Start()
 	{
@@ -190,6 +191,11 @@ public class SpriteAnim : MonoBehaviour {
 			if(m_Library.ShouldScale(_animID,_goalID)&&m_SpriteScale!=null)
 			{
 				m_SpriteScale.ScaleTo(m_Library.GetScaleFrom(_animID,_goalID),m_Library.GetScaleTo(_animID,_goalID),m_Library.GetFrameDuration(_animID,_goalID));
+			}
+
+			if(m_Library.ShouldPlayParticles(_animID, _goalID))
+			{
+				m_Particles.Play();
 			}
 				
 			return m_Library.GetFrameDuration(_animID,_goalID);

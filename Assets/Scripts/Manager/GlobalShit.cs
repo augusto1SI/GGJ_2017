@@ -25,7 +25,7 @@ public static class GlobalShit {
 
 	private static WaveType[] m_BasicWave=new WaveType[]{WaveType.TypeA,WaveType.TypeB,WaveType.TypeC};
 	//private static WaveType[] m_ParasiteWave=new WaveType[]{WaveType.TypeI,WaveType.TypeJ,WaveType.TypeK,WaveType.TypeL,WaveType.TypeM,WaveType.TypeN};
-	private static WaveType[] m_ParasiteWave=new WaveType[]{WaveType.TypeA,WaveType.TypeB};
+	private static WaveType[] m_ParasiteWave=new WaveType[]{WaveType.TypeA,WaveType.TypeB,WaveType.TypeC};
 	private static WaveType[] m_LarvaWave=new WaveType[]{WaveType.TypeD,WaveType.TypeE,WaveType.TypeF,WaveType.TypeG,WaveType.TypeH,WaveType.TypeI,WaveType.TypeJ,WaveType.TypeK,WaveType.TypeL};
 
 

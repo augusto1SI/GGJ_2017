@@ -5,7 +5,7 @@ public static class TestTouchRadii
 {
 	private static float m_RadiusForMaxSpeed = 4f; //Anything farther from this distance will result in the max speed multiplier
 	private static float m_RadiusForMinSpeed = 2f; //This distance will result on the normal speed multiplier (One)
-	private static float m_RadiusForIgnore = 1.25f; //Anything less than this distance will make ignore the touch
+	private static float m_RadiusForIgnore = 1.5f; //Anything less than this distance will make ignore the touch
 	private static float m_MaxSpeedMultiplier = 3f;
 	private static float m_MaxDampening = 0.3f;
 	private static float m_SubtractToObtainMinDampRadius = 10f;

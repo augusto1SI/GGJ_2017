@@ -100,6 +100,11 @@ public class AnimFrameLibrary : MonoBehaviour {
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_ScaleTo;
 	}
 
+	public bool ShouldPlayParticles(int _animID,int _frameID)
+	{
+		return m_Anims[_animID].m_AnimGoals[_frameID].m_PlayParticles;
+	}
+
 	public void PlayParticles(int _animID,int _frameID)
 	{
 		if(m_Anims[_animID].m_AnimGoals[_frameID].m_PlayParticles&&m_Anims[_animID].m_AnimGoals[_frameID].m_Particles!=null)

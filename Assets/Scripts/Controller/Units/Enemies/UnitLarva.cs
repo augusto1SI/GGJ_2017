@@ -32,7 +32,17 @@ public class UnitLarva : UnitAI {
 
 	public ParticleSystem m_ParticleEvolution;
 	public ParticleSystem m_ParticleEvolving;
+	public BGRotators m_ParticleRotator;
 	private float m_ParticleTimeOffset = 0.1f;
+
+	public ParticleSystem m_StandardLarvaParticles;
+	public ParticleSystem m_YLW_EvolvingParticles;
+	public ParticleSystem m_RED_EvolvingParticles;
+	public ParticleSystem m_BLU_EvolvingParticles;
+	public ParticleSystem m_YLW_EvolvedParticles;
+	public ParticleSystem m_RED_EvolvedParticles;
+	public ParticleSystem m_BLU_EvolvedParticles;
+	public ParticleSystem m_Trail;
 
 	// Use this for initialization
 	public override void Start () {
@@ -69,7 +79,36 @@ public class UnitLarva : UnitAI {
 		base.Update ();
 	}
 
-
+	void PlayStageIdleParticles(int _stage)
+	{
+		if (_stage == 0)
+		{
+			m_Anim.m_Particles = m_StandardLarvaParticles;
+			return;
+		}
+		switch(m_UseWaveType)
+		{
+			//YELLOW MINIONS
+			case GlobalShit.WaveType.TypeD:
+			case GlobalShit.WaveType.TypeG:
+			case GlobalShit.WaveType.TypeJ:
+				m_Anim.m_Particles = _stage == 1 ? m_YLW_EvolvingParticles : m_YLW_EvolvedParticles;
+				m_Trail.Stop();
+				break;
+			//RED MINIONS
+			case GlobalShit.WaveType.TypeE:
+			case GlobalShit.WaveType.TypeH:
+			case GlobalShit.WaveType.TypeK:
+				m_Anim.m_Particles = _stage == 1 ? m_RED_EvolvingParticles : m_RED_EvolvedParticles;
+				break;
+			//BLUE MINIONS
+			case GlobalShit.WaveType.TypeF:
+			case GlobalShit.WaveType.TypeI:
+			case GlobalShit.WaveType.TypeL:
+				m_Anim.m_Particles = _stage == 1 ? m_BLU_EvolvingParticles : m_BLU_EvolvedParticles;
+				break;
+		}
+	}
 
 	IEnumerator Think()
 	{
@@ -87,12 +126,14 @@ public class UnitLarva : UnitAI {
 				case UnitAIState.Alive:
 					m_WaveNeeded=GlobalShit.GetRandomBasicWave();
 					m_Anim.Play(0);
+					PlayStageIdleParticles(0);
                     AudioManager.Instance.PlaySFX(AudioCore.SFXID.CORRECT);
 					yield return StartCoroutine(Alive());
 				break;
 				case UnitAIState.Awake:
 					m_WaveNeeded=m_EvolvingWaveSequence[0];
 					m_Anim.Play(1);
+					PlayStageIdleParticles(1);
 					m_SequenceCount=0;
                     AudioManager.Instance.PlaySFX(AudioCore.SFXID.CORRECT);
 					yield return StartCoroutine(Awaken());
@@ -170,9 +211,11 @@ public class UnitLarva : UnitAI {
 					yield return new WaitForSeconds (m_ParticleTimeOffset);
 					m_Anim.Play(2);
 					m_ParticleEvolving.Play();
+					m_ParticleRotator.m_Active = true;
 					yield return new WaitForSeconds (m_EvolvingCooldown-m_ParticleTimeOffset);
-
+					m_ParticleRotator.m_Active = true;
 					m_ParticleEvolving.Stop();
+					m_ParticleEvolution.Play(true);
 
 					if(!IsMaxLevel())
 					{
@@ -185,6 +228,7 @@ public class UnitLarva : UnitAI {
 					else
 					{
 						m_Anim.Play(3);
+						PlayStageIdleParticles(2);
 					}
 				}
 				else
