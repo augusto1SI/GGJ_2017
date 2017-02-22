@@ -16,6 +16,9 @@ public class UnitPlayer : Unit
 	public ButtonReceiver m_ButtonA;
 	public ButtonReceiver m_ButtonB;
 	public ButtonReceiver m_ButtonC;
+#if UNITY_EDITOR
+	public ButtonReceiver[] m_DebugButtons;
+#endif
 
     private Vector3 m_LastTouchPosition;
 
@@ -57,6 +60,14 @@ public class UnitPlayer : Unit
 		m_ButtonA.OnClicked += ClickButtonA;
 		m_ButtonB.OnClicked += ClickButtonB;
 		m_ButtonC.OnClicked += ClickButtonC;
+
+#if UNITY_EDITOR
+		for(int i = 0; i < m_DebugButtons.Length; ++i)
+		{
+			m_DebugButtons[i].m_WaveType = (GlobalShit.WaveType)i+4;
+			m_DebugButtons[i].OnDebugClicked += DebugButtonClick;
+		}
+#endif
 
 		if(m_Anim==null)
 			m_Anim=GetComponentInChildren<SpriteAnim>();
@@ -153,6 +164,13 @@ public class UnitPlayer : Unit
 		ShootWave(GlobalShit.WaveType.TypeC);
 		m_Anim.Play(3);
 	}
+
+#if UNITY_EDITOR
+	void DebugButtonClick(GlobalShit.WaveType _wave)
+	{
+		ShootWave(_wave);
+	}
+#endif
 
 	public bool CanIFollowYou()
 	{

@@ -42,10 +42,16 @@ public class UnitLarva : UnitAI {
 	public ParticleSystem m_YLW_EvolvedParticles;
 	public ParticleSystem m_RED_EvolvedParticles;
 	public ParticleSystem m_BLU_EvolvedParticles;
-	public ParticleSystem m_Trail;
+	public ParticleSystem m_TrailParticles;
+
+	public bool m_ComesFromElder = false;
+	private bool m_AwokenByElder = false;
 
 	// Use this for initialization
 	public override void Start () {
+		if (m_ComesFromElder)
+			return;
+
 		base.Start ();
 
 		m_Player=FindObjectOfType<UnitPlayer>();
@@ -70,22 +76,59 @@ public class UnitLarva : UnitAI {
 
 		m_InitialPosition=transform.position;
 
+		ManualStartThinkCoroutine();
+	}
+
+	public void ManualStart()
+	{
+		base.Start ();
+
+		m_AwokenByElder = false;
+
+		m_Player=FindObjectOfType<UnitPlayer>();
+		
+		if(m_Visual==null)
+			m_Visual=GetComponentInChildren<VisualUnitLarva>();
+		
+		if (worldMask == -1)
+			worldMask =1 << LayerMask.NameToLayer ("World");
+		
+		m_ClickReceiver=GetComponentInChildren<ButtonReceiver>();
+		
+		m_ClickReceiver.OnClicked += OnClick;
+		
+		m_Anim = GetComponentInChildren<SpriteAnim>();
+		
+		agent.angularSpeed = m_TurnSpeed;
+		m_Anim.m_Library = ArtDispenser.Instance.GetAnimLibrary(m_UseWaveType);
+	}
+
+	public void SetInitialPosition(Vector3 _v)
+	{
+		m_InitialPosition = _v;
+	}
+
+	public void ManualStartThinkCoroutine(UnitAIState _state = UnitAIState.Inert)
+	{
+		m_State = _state;
 		StartCoroutine(Think());
 	}
 
-
 	// Update is called once per frame
-	public override void Update () {
+	public override void Update ()
+	{
 		base.Update ();
 	}
 
 	void PlayStageIdleParticles(int _stage)
 	{
+
 		if (_stage == 0)
 		{
 			m_Anim.m_Particles = m_StandardLarvaParticles;
 			return;
 		}
+
 		switch(m_UseWaveType)
 		{
 			//YELLOW MINIONS
@@ -93,7 +136,7 @@ public class UnitLarva : UnitAI {
 			case GlobalShit.WaveType.TypeG:
 			case GlobalShit.WaveType.TypeJ:
 				m_Anim.m_Particles = _stage == 1 ? m_YLW_EvolvingParticles : m_YLW_EvolvedParticles;
-				m_Trail.Stop();
+				m_TrailParticles.Stop();
 				break;
 			//RED MINIONS
 			case GlobalShit.WaveType.TypeE:
@@ -144,6 +187,9 @@ public class UnitLarva : UnitAI {
 				break;
 				case UnitAIState.Dead:
 					yield return StartCoroutine(Die());
+				break;
+				case UnitAIState.WaitToBeAwokenByElder:
+					yield return StartCoroutine(WaitToBeAwoken());
 				break;
 			}
 			yield return null;
@@ -309,6 +355,23 @@ public class UnitLarva : UnitAI {
 	}
 	#endregion
 
+	#region ELDER_MINION
+	IEnumerator WaitToBeAwoken()
+	{
+		m_Visual.SetVisible(false);
+		m_Visual.SetOrbitVisible(false);
+		while(m_ComesFromElder && !m_AwokenByElder)
+		{
+			yield return null;
+		}
+		m_LastReceivedWave=GlobalShit.WaveType.None;
+		m_Visual.SetVisible(true);
+		m_Anim.Play (0);
+		m_State=UnitAIState.Follow;
+		yield return null;
+	}
+	#endregion
+
 	#region STATE_DEAD
 	public void OnClick()
 	{
@@ -320,7 +383,7 @@ public class UnitLarva : UnitAI {
 		if(m_RemainingUses==0)
 		{
 			m_State=UnitAIState.Dead;		
-			m_Anim.Play(4);
+			m_Anim.Play(m_ComesFromElder?1:4);
 			//TODO: Inform the player that this larva has been carried by the clown!!
 		}
 			
@@ -332,8 +395,25 @@ public class UnitLarva : UnitAI {
 		yield return new WaitForSeconds(2);
 		m_Visual.SetVisible(false);
 		transform.position=m_InitialPosition;
-		m_State=UnitAIState.Inert;
+		m_State=m_ComesFromElder ? UnitAIState.WaitToBeAwokenByElder : UnitAIState.Inert;
+		m_AwokenByElder = false;
 	}
 	#endregion
 
+	#region ELDER_SPECIFIC
+
+	public void ProceedToFollow()
+	{
+		if(!m_ComesFromElder) return;
+		m_AwokenByElder = true;
+	}
+
+	public bool IsActiveMinion
+	{
+		get
+		{
+			return m_State == UnitAIState.Follow || m_State == UnitAIState.Dead;
+		}
+	}
+	#endregion
 }

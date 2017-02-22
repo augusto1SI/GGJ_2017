@@ -26,6 +26,7 @@ public class AudioCore : MonoBehaviour
         TYPEL,
         TYPEM,
         TYPEN,
+		TYPEO,
         CORRECT,
         None
     }

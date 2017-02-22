@@ -25,6 +25,9 @@ public class SpriteAnim : MonoBehaviour {
 	private bool m_Paused;
 	public ParticleSystem m_Particles;
 
+	public delegate void OnKeyframeCallback();
+	public OnKeyframeCallback m_KeyframeCallback;
+
 	void Start()
 	{
 		if (m_PlayOnAwake)
@@ -196,6 +199,11 @@ public class SpriteAnim : MonoBehaviour {
 			if(m_Library.ShouldPlayParticles(_animID, _goalID))
 			{
 				m_Particles.Play();
+			}
+
+			if(m_Library.IsAKeyFrame(_animID, _goalID) && m_KeyframeCallback != null)
+			{
+				m_KeyframeCallback();
 			}
 				
 			return m_Library.GetFrameDuration(_animID,_goalID);

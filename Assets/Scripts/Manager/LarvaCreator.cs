@@ -12,6 +12,8 @@ public class LarvaCreator : MonoBehaviour
 
 		for(int i = 0; i < _larvas.Length; ++i)
 		{
+			if(_larvas[i].m_ComesFromElder) continue;
+
 			GameObject _go = Instantiate(m_LarvaPrefab);
 			_go.transform.SetParent(_larvas[i].transform.parent);
 			_go.transform.localPosition = _larvas[i].transform.localPosition;

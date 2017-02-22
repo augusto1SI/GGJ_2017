@@ -6,20 +6,21 @@ public static class GlobalShit {
 	public enum WaveType
 	{
 		None,
-		TypeA,
-		TypeB,
-		TypeC,
-		TypeD,
-		TypeE,
-		TypeF,
-		TypeG,
-		TypeH,
-		TypeI,
-		TypeJ,
-		TypeK,
-		TypeL,
-		TypeM,
-		TypeN,
+		TypeA, //Square
+		TypeB, //Triangle
+		TypeC, //Circle
+		TypeD, //X
+		TypeE, //+
+		TypeF, //Lightning Bolt
+		TypeG, //U
+		TypeH, //V
+		TypeI, //P
+		TypeJ, // =|
+		TypeK, //Spiral
+		TypeL, //Ribbon
+		TypeM, //Diamond Elder (Star)
+		TypeN, //Rock Elder (Moon)
+		TypeO, //Pollip Elder
 		MAX
 	};
 

@@ -12,6 +12,9 @@ public abstract class UnitAI : Unit {
 		Awake,
 		Follow,
 		Dead,
+		WaitToBeAwokenByElder,
+		Morphing,
+		Spit,
 		MAX
 	};
 

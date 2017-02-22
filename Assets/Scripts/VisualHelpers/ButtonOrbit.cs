@@ -12,6 +12,8 @@ public class ButtonOrbit : MonoBehaviour {
 	private bool m_Orbiting=false;
     private float m_Speed = 10f;
 
+	public bool m_ShowLog = false; 
+
 	void Awake()
 	{
 		m_Pivot=transform;
@@ -46,6 +48,9 @@ public class ButtonOrbit : MonoBehaviour {
 
 	public void SetIcon(GlobalShit.WaveType[] _type)
 	{
+		if(m_ShowLog)
+			Debug.Log (_type.Length);
+
 		if(_type.Length>m_BtnRenderers.Length)
 			return;
 
@@ -55,10 +60,14 @@ public class ButtonOrbit : MonoBehaviour {
 			{
 				m_BtnRenderers[i].enabled=true;
 				m_BtnRenderers[i].sprite = ArtDispenser.Instance.GetNoteIcon((int)_type[i]);
+				if(m_ShowLog)
+					Debug.Log("Iterating on " + i.ToString() + " to show button with type " + _type[i].ToString());
 			}
 			else
 			{
-				m_BtnRenderers[i].enabled=false;				
+				m_BtnRenderers[i].enabled=false;
+				if(m_ShowLog)
+					Debug.Log("Iterating on " + i.ToString() + " to not show");
 			}
 		}
 	}

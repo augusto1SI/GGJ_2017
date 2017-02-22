@@ -20,6 +20,12 @@ public class ArtDispenser : MonoBehaviour {
 	public Color m_HighlightColor;
 	public Color m_OpaqueColor;
 	public AnimFrameLibrary[] m_AnimLibraries;
+	public AnimFrameLibrary[] m_ElderAnimLibraries;
+
+	public AnimFrameLibrary GetElderAnimLibrary(int _type)
+	{
+		return m_ElderAnimLibraries[_type];
+	}
 
 	public AnimFrameLibrary GetAnimLibrary(GlobalShit.WaveType _type)
 	{
