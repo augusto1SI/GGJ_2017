@@ -12,10 +12,13 @@ public class ImageScale : MonoBehaviour {
 	private float m_CurTime;
 	private float m_AnimDuration;
 
-	private float m_InitialTime;
-
 	private Vector2 m_From;
 	private Vector2 m_To;
+
+	public AnimationCurve m_ScaleCurveX;
+	public AnimationCurve m_ScaleCurveY;
+
+	private Vector2 m_TempScale;
 
 	void Start()
 	{
@@ -23,22 +26,7 @@ public class ImageScale : MonoBehaviour {
 			m_RecTransformTarget=transform;
 	}
 
-	public void ScaleTo(Vector2 _to,float _duration=1)
-	{
-		m_Key++;
-
-		//initialize animation values
-		m_AnimDuration=Mathf.Clamp(_duration,0.1f,100.0f);
-		m_From=m_RecTransformTarget.localScale;
-		m_To=_to;
-		m_CurTime=0;
-
-		//start the animating loop
-
-		StartCoroutine(AnimTick(m_Key));
-	}
-
-	public void ScaleTo(Vector2 _from,Vector2 _to,float _duration=1)
+	public void ScaleTo(Vector2 _from,Vector2 _to,AnimationCurve _curveX,AnimationCurve _curveY,float _duration=1)
 	{
 		m_Key++;
 
@@ -46,6 +34,8 @@ public class ImageScale : MonoBehaviour {
 		m_AnimDuration=Mathf.Clamp(_duration,0.1f,100.0f);
 		m_From=_from;
 		m_To=_to;
+		m_ScaleCurveX=_curveX;
+		m_ScaleCurveY=_curveY;
 		m_CurTime=0;
 
 		//start the animating loop
@@ -54,12 +44,19 @@ public class ImageScale : MonoBehaviour {
 
 	IEnumerator AnimTick(byte _curKey)
 	{
-		m_RecTransformTarget.localScale=Vector2.Lerp(m_From,m_To,m_CurTime);
-		m_InitialTime=Time.time;
+		m_RecTransformTarget.localScale=m_From;
+		m_TempScale=m_From;
+		float ETA=0;
 		do
 		{
-			m_CurTime=Mathf.Clamp(Time.time-m_InitialTime,0,m_AnimDuration);
-			m_RecTransformTarget.localScale=Vector2.Lerp(m_From,m_To,m_CurTime/m_AnimDuration);
+			//increase time for this frame
+			m_CurTime=Mathf.Clamp(m_CurTime+=Time.deltaTime,0,m_AnimDuration);
+			//get the delta time in range (0-1)
+			ETA=m_CurTime/m_AnimDuration;
+			//get the proper axis values from the given curves
+			m_TempScale.x=Mathf.Lerp(m_From.x,m_To.x,m_ScaleCurveX.Evaluate(ETA));
+			m_TempScale.y=Mathf.Lerp(m_From.y,m_To.y,m_ScaleCurveY.Evaluate(ETA));
+			m_RecTransformTarget.localScale=m_TempScale;
 			yield return 0;
 		}while(_curKey==m_Key&&m_CurTime<m_AnimDuration);
 	}

@@ -9,6 +9,18 @@ public class LarvaCreator : MonoBehaviour
 	public void SetLarvas()
 	{
 		UnitLarva[] _larvas = GameObject.FindObjectsOfType (typeof(UnitLarva)) as UnitLarva[];
+		List<UnitLarva> _larvaList = new List<UnitLarva> (_larvas);
+
+		for(int i = 0; i < _larvaList.Count; ++i)
+		{
+			if(_larvaList[i].m_ComesFromElder)
+			{
+				_larvaList.RemoveAt(i);
+				i=0;
+			}
+		}
+
+		_larvas = _larvaList.ToArray ();
 
 		for(int i = 0; i < _larvas.Length; ++i)
 		{

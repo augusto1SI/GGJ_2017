@@ -55,6 +55,11 @@ public class AnimFrameLibrary : MonoBehaviour {
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_IsKeyFrame;
 	}
 
+	public bool UseAdvancedSettings(int _animID,int _frameID)
+	{
+		return m_Anims[_animID].m_AnimGoals[_frameID].m_AdvancedSettings;
+	}
+
 	public bool ShouldTint(int _animID,int _frameID)
 	{
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_UseTint;
@@ -68,6 +73,11 @@ public class AnimFrameLibrary : MonoBehaviour {
 	public Color GetColorTo(int _animID,int _frameID)
 	{
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_ColorTo;
+	}
+
+	public AnimationCurve GetColorCurve(int _animID,int _frameID)
+	{
+		return m_Anims[_animID].m_AnimGoals[_frameID].m_ColorCurve;
 	}
 
 	public bool ShouldMove(int _animID,int _frameID)
@@ -85,6 +95,16 @@ public class AnimFrameLibrary : MonoBehaviour {
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_OffsetTo;
 	}
 
+	public AnimationCurve GetMoveCurveX(int _animID, int _frameID)
+	{
+		return m_Anims[_animID].m_AnimGoals[_frameID].m_MoveCurveX;
+	}
+
+	public AnimationCurve GetMoveCurveY(int _animID, int _frameID)
+	{
+		return m_Anims[_animID].m_AnimGoals[_frameID].m_MoveCurveY;
+	}
+
 	public bool ShouldScale(int _animID,int _frameID)
 	{
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_UseScale;
@@ -100,6 +120,16 @@ public class AnimFrameLibrary : MonoBehaviour {
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_ScaleTo;
 	}
 
+	public AnimationCurve GetScaleCurveX(int _animID, int _frameID)
+	{
+		return m_Anims[_animID].m_AnimGoals[_frameID].m_ScaleCurveX;
+	}
+
+	public AnimationCurve GetScaleCurveY(int _animID, int _frameID)
+	{
+		return m_Anims[_animID].m_AnimGoals[_frameID].m_ScaleCurveY;
+	}
+
 	public bool ShouldPlayParticles(int _animID,int _frameID)
 	{
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_PlayParticles;
@@ -107,7 +137,7 @@ public class AnimFrameLibrary : MonoBehaviour {
 
 	public void PlayParticles(int _animID,int _frameID)
 	{
-		if(m_Anims[_animID].m_AnimGoals[_frameID].m_PlayParticles&&m_Anims[_animID].m_AnimGoals[_frameID].m_Particles!=null)
+		if(m_Anims[_animID].m_AnimGoals[_frameID].m_Particles!=null)
 		{
 			m_Anims[_animID].m_AnimGoals[_frameID].m_Particles.Play(true);
 		}
