@@ -16,6 +16,7 @@ public class UnitLarva : UnitAI {
 	public int m_Tier=-1;
 
 	private int m_Uses=5;
+	private int m_ElderUses=2;
 	private int m_RemainingUses;
 
 	private float m_FollowDistance=2;
@@ -29,6 +30,8 @@ public class UnitLarva : UnitAI {
 	private Vector3 m_InitialPosition;
 
 	private SpriteAnim m_Anim;
+	private SpriteAnim m_SpitAnim;
+	private int m_SpitAnimIndex;
 
 	public ParticleSystem m_ParticleEvolution;
 	public ParticleSystem m_ParticleEvolving;
@@ -46,6 +49,18 @@ public class UnitLarva : UnitAI {
 
 	public bool m_ComesFromElder = false;
 	private bool m_AwokenByElder = false;
+
+
+	private UnitAIState State
+	{
+		get{
+			return m_State;
+		}
+
+		set{
+			m_State=value;
+		}
+	}
 
 	// Use this for initialization
 	public override void Start () {
@@ -66,7 +81,7 @@ public class UnitLarva : UnitAI {
 
 		m_ClickReceiver.OnClicked += OnClick;
 
-		m_Anim = GetComponentInChildren<SpriteAnim>();
+		m_Anim = transform.GetChild(0).GetComponent<SpriteAnim>();
 
 		agent.angularSpeed = m_TurnSpeed;
 
@@ -97,7 +112,8 @@ public class UnitLarva : UnitAI {
 		
 		m_ClickReceiver.OnClicked += OnClick;
 		
-		m_Anim = GetComponentInChildren<SpriteAnim>();
+		m_Anim = transform.GetChild(0).GetComponent<SpriteAnim>();
+		m_SpitAnim = gameObject.GetComponent<SpriteAnim>();
 		
 		agent.angularSpeed = m_TurnSpeed;
 		m_Anim.m_Library = ArtDispenser.Instance.GetAnimLibrary(m_UseWaveType);
@@ -110,7 +126,7 @@ public class UnitLarva : UnitAI {
 
 	public void ManualStartThinkCoroutine(UnitAIState _state = UnitAIState.Inert)
 	{
-		m_State = _state;
+		State = _state;
 		StartCoroutine(Think());
 	}
 
@@ -129,6 +145,8 @@ public class UnitLarva : UnitAI {
 			return;
 		}
 
+		m_TrailParticles.Play();
+
 		switch(m_UseWaveType)
 		{
 			//YELLOW MINIONS
@@ -142,12 +160,15 @@ public class UnitLarva : UnitAI {
 			case GlobalShit.WaveType.TypeE:
 			case GlobalShit.WaveType.TypeH:
 			case GlobalShit.WaveType.TypeK:
+			case GlobalShit.WaveType.TypeM:
+			case GlobalShit.WaveType.TypeN:
 				m_Anim.m_Particles = _stage == 1 ? m_RED_EvolvingParticles : m_RED_EvolvedParticles;
 				break;
 			//BLUE MINIONS
 			case GlobalShit.WaveType.TypeF:
 			case GlobalShit.WaveType.TypeI:
 			case GlobalShit.WaveType.TypeL:
+			case GlobalShit.WaveType.TypeO:
 				m_Anim.m_Particles = _stage == 1 ? m_BLU_EvolvingParticles : m_BLU_EvolvedParticles;
 				break;
 		}
@@ -157,7 +178,7 @@ public class UnitLarva : UnitAI {
 	{
 		while(true)
 		{
-			switch(m_State)
+			switch(State)
 			{
 				case UnitAIState.Inert:
 					m_UseWaveType=GlobalShit.GetRandomLarvaWave(m_Tier);
@@ -182,7 +203,7 @@ public class UnitLarva : UnitAI {
 					yield return StartCoroutine(Awaken());
 				break;
 				case UnitAIState.Follow:
-					m_RemainingUses=m_Uses;
+					m_RemainingUses=m_ComesFromElder?m_ElderUses:m_Uses;
 					yield return StartCoroutine(Follow());
 				break;
 				case UnitAIState.Dead:
@@ -206,7 +227,7 @@ public class UnitLarva : UnitAI {
 			yield return null;
 		}
 		m_LastReceivedWave=GlobalShit.WaveType.None;
-		m_State=UnitAIState.Alive;
+		State=UnitAIState.Alive;
 		yield return null;
 	}
 	#endregion
@@ -223,7 +244,7 @@ public class UnitLarva : UnitAI {
 		}
 		m_LastReceivedWave=GlobalShit.WaveType.None;
 		m_WaveNeeded=GlobalShit.WaveType.None;
-		m_State=UnitAIState.Awake;
+		State=UnitAIState.Awake;
 		yield return null;
 	}
 	#endregion
@@ -285,7 +306,7 @@ public class UnitLarva : UnitAI {
 			yield return null;
 		}
 		m_Visual.SetOrbitVisible(false);
-		m_State=UnitAIState.Follow;
+		State=UnitAIState.Follow;
 		yield return null;
 	}
 
@@ -367,7 +388,10 @@ public class UnitLarva : UnitAI {
 		m_LastReceivedWave=GlobalShit.WaveType.None;
 		m_Visual.SetVisible(true);
 		m_Anim.Play (0);
-		m_State=UnitAIState.Follow;
+		m_SpitAnim.Play(m_SpitAnimIndex);
+		m_TrailParticles.Play();
+		yield return new WaitForSeconds(m_SpitAnim.GetAnimDuration(m_SpitAnimIndex)); //duration of the spit move/scale animation
+		State=UnitAIState.Follow;
 		yield return null;
 	}
 	#endregion
@@ -375,14 +399,14 @@ public class UnitLarva : UnitAI {
 	#region STATE_DEAD
 	public void OnClick()
 	{
-		if(m_State!=UnitAIState.Follow)
+		if(State!=UnitAIState.Follow)
 			return;
 
 		m_Player.ShootWave(m_UseWaveType);
 		m_RemainingUses--;
 		if(m_RemainingUses==0)
 		{
-			m_State=UnitAIState.Dead;		
+			State=UnitAIState.Dead;		
 			m_Anim.Play(m_ComesFromElder?1:4);
 			//TODO: Inform the player that this larva has been carried by the clown!!
 		}
@@ -392,19 +416,21 @@ public class UnitLarva : UnitAI {
 	IEnumerator Die()
 	{
 		agent.Stop();
+		m_TrailParticles.Stop();
 		yield return new WaitForSeconds(2);
 		m_Visual.SetVisible(false);
 		transform.position=m_InitialPosition;
-		m_State=m_ComesFromElder ? UnitAIState.WaitToBeAwokenByElder : UnitAIState.Inert;
+		State=m_ComesFromElder ? UnitAIState.WaitToBeAwokenByElder : UnitAIState.Inert;
 		m_AwokenByElder = false;
 	}
 	#endregion
 
 	#region ELDER_SPECIFIC
 
-	public void ProceedToFollow()
+	public void ProceedToFollow(int _idx)
 	{
 		if(!m_ComesFromElder) return;
+		m_SpitAnimIndex = _idx;
 		m_AwokenByElder = true;
 	}
 
@@ -412,7 +438,7 @@ public class UnitLarva : UnitAI {
 	{
 		get
 		{
-			return m_State == UnitAIState.Follow || m_State == UnitAIState.Dead;
+			return State == UnitAIState.Follow || State == UnitAIState.Dead;
 		}
 	}
 	#endregion

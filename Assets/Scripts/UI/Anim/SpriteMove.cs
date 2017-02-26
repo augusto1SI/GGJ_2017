@@ -50,7 +50,7 @@ public class SpriteMove : MonoBehaviour {
 	IEnumerator AnimTick(byte _curKey)
 	{
 		//teleport to initial position
-		m_RecTransformTarget.localPosition=m_From;
+		m_RecTransformTarget.localPosition=new Vector3(m_From.x,m_RecTransformTarget.localPosition.y,m_From.y);
 		m_TempPos=m_From;
 		float ETA=0;
 		do
@@ -62,7 +62,8 @@ public class SpriteMove : MonoBehaviour {
 			//get the proper axis values from the given curves
 			m_TempPos.x=Mathf.Lerp(m_From.x,m_To.x,m_AnimCurveX.Evaluate(ETA));
 			m_TempPos.y=Mathf.Lerp(m_From.y,m_To.y,m_AnimCurveY.Evaluate(ETA));
-			m_RecTransformTarget.localPosition=m_TempPos;
+			Debug.Log("MOVING: "+m_TempPos.ToString());
+			m_RecTransformTarget.localPosition=new Vector3(m_TempPos.x,m_RecTransformTarget.localPosition.y,m_TempPos.y);
 			
 			yield return 0;
 		}while(_curKey==m_Key&&m_CurTime<m_AnimDuration);

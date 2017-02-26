@@ -16,9 +16,14 @@ public class UnitPlayer : Unit
 	public ButtonReceiver m_ButtonA;
 	public ButtonReceiver m_ButtonB;
 	public ButtonReceiver m_ButtonC;
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
+	public ButtonReceiver m_EnableDebugButton;
 	public ButtonReceiver[] m_DebugButtons;
-#endif
+	private SphereCollider[] m_DebugColliders;
+	private SpriteRenderer[] m_DebugVisuals;
+	private bool m_ShowText;
+	public TextMesh m_Text;
+//#endif
 
     private Vector3 m_LastTouchPosition;
 
@@ -45,8 +50,6 @@ public class UnitPlayer : Unit
 	private Ray m_Ray;
 	private RaycastHit m_RayHit;
 
-	public TextMesh m_Text;
-
 	public Movement m_Movement;
 
 	public override void Start ()
@@ -61,13 +64,27 @@ public class UnitPlayer : Unit
 		m_ButtonB.OnClicked += ClickButtonB;
 		m_ButtonC.OnClicked += ClickButtonC;
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
+		m_DebugColliders = new SphereCollider[m_DebugButtons.Length];
+		m_DebugVisuals = new SpriteRenderer[m_DebugButtons.Length];
+
 		for(int i = 0; i < m_DebugButtons.Length; ++i)
 		{
 			m_DebugButtons[i].m_WaveType = (GlobalShit.WaveType)i+4;
 			m_DebugButtons[i].OnDebugClicked += DebugButtonClick;
+
+			m_DebugColliders[i] = m_DebugButtons[i].GetComponent<SphereCollider>();
+			m_DebugVisuals[i] = m_DebugButtons[i].transform.GetComponentInChildren<SpriteRenderer>();
+
+			m_DebugColliders[i].enabled = false;
+			m_DebugVisuals[i].enabled = false;
 		}
-#endif
+
+		m_EnableDebugButton.OnClicked += ToggleDebugButtons;
+
+		m_ShowText = false;
+		m_Text.text = "";
+//#endif
 
 		if(m_Anim==null)
 			m_Anim=GetComponentInChildren<SpriteAnim>();
@@ -82,7 +99,10 @@ public class UnitPlayer : Unit
 	{
 		//TURN CODE
 		transform.Rotate(0f,Input.GetAxis("Mouse X") * m_TurnSpeed * Time.deltaTime, 0f);
-		m_Text.text = (1.0f / Time.smoothDeltaTime).ToString ();
+//#if UNITY_EDITOR
+		if(m_ShowText)
+			m_Text.text = (1.0f / Time.smoothDeltaTime).ToString ();
+//#endif
 		//MOVE CODE
 #if UNITY_IOS
 		if(Input.touchCount > 0)
@@ -165,12 +185,25 @@ public class UnitPlayer : Unit
 		m_Anim.Play(3);
 	}
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
 	void DebugButtonClick(GlobalShit.WaveType _wave)
 	{
 		ShootWave(_wave);
 	}
-#endif
+
+	void ToggleDebugButtons()
+	{
+		for(int i = 0; i < m_DebugButtons.Length; ++i)
+		{
+			m_DebugColliders[i].enabled = !m_DebugColliders[i].enabled;
+			m_DebugVisuals[i].enabled = !m_DebugVisuals[i].enabled;
+		}
+
+		m_ShowText = !m_ShowText;
+		if (!m_ShowText)
+			m_Text.text = "";
+	}
+//#endif
 
 	public bool CanIFollowYou()
 	{

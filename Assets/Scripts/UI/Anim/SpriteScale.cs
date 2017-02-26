@@ -44,7 +44,7 @@ public class SpriteScale : MonoBehaviour {
 	
 	IEnumerator AnimTick(byte _curKey)
 	{
-		m_RecTransformTarget.localScale=m_From;
+		m_RecTransformTarget.localScale=new Vector3(m_From.x,m_RecTransformTarget.lossyScale.y,m_From.y);
 		m_TempScale=m_From;
 		float ETA=0;
 		do
@@ -56,7 +56,7 @@ public class SpriteScale : MonoBehaviour {
 			//get the proper axis values from the given curves
 			m_TempScale.x=Mathf.Lerp(m_From.x,m_To.x,m_ScaleCurveX.Evaluate(ETA));
 			m_TempScale.y=Mathf.Lerp(m_From.y,m_To.y,m_ScaleCurveY.Evaluate(ETA));
-			m_RecTransformTarget.localScale=m_TempScale;
+			m_RecTransformTarget.localScale=new Vector3(m_TempScale.x,m_RecTransformTarget.lossyScale.y,m_TempScale.y);
 			yield return 0;
 		}while(_curKey==m_Key&&m_CurTime<m_AnimDuration);
 	}

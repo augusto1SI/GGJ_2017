@@ -30,6 +30,7 @@ public class UnitElder : UnitAI {
 	public ParticleSystem m_IdleParticles;
 
 	public UnitLarva[] m_ElderLarvas;
+	private int m_SpitIndex = 0;
 
 	// Use this for initialization
 	public override void Start ()
@@ -186,10 +187,10 @@ public class UnitElder : UnitAI {
 
 		if(_tempIndex != -1)
 		{
-			m_ElderLarvas[_tempIndex].ProceedToFollow();
+			m_ElderLarvas[_tempIndex].ProceedToFollow(GetSpitIndex);
 		}
 
-		yield return new WaitForSeconds(m_Anim.GetAnimDuration(2));
+		yield return new WaitForSeconds(m_Anim.GetAnimDuration(3));
 
 		m_State=UnitAIState.Alive;
 		yield return null;
@@ -219,6 +220,16 @@ public class UnitElder : UnitAI {
 					return true;
 			}
 			return false;
+		}
+	}
+
+	int GetSpitIndex
+	{
+		get
+		{
+			++m_SpitIndex;
+			m_SpitIndex %= 2;
+			return m_SpitIndex;
 		}
 	}
 

@@ -87,11 +87,15 @@ public class AnimFrameLibrary : MonoBehaviour {
 
 	public Vector2 GetOffsetFrom(int _animID,int _frameID)
 	{
+		if (m_Anims [_animID].m_AnimGoals [_frameID].m_UseRefFrom && m_Anims [_animID].m_AnimGoals [_frameID].m_TransformFrom != null)
+			return new Vector2(m_Anims [_animID].m_AnimGoals [_frameID].m_TransformFrom.position.x,m_Anims [_animID].m_AnimGoals [_frameID].m_TransformFrom.position.z);
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_OffsetFrom;
 	}
 
 	public Vector2 GetOffsetTo(int _animID,int _frameID)
 	{
+		if (m_Anims [_animID].m_AnimGoals [_frameID].m_UseRefTo && m_Anims [_animID].m_AnimGoals [_frameID].m_TransformTo != null)
+			return new Vector2(m_Anims [_animID].m_AnimGoals [_frameID].m_TransformTo.position.x,m_Anims [_animID].m_AnimGoals [_frameID].m_TransformTo.position.z);
 		return m_Anims[_animID].m_AnimGoals[_frameID].m_OffsetTo;
 	}
 

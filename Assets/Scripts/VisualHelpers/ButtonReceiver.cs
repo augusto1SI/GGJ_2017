@@ -6,12 +6,12 @@ public class ButtonReceiver : MonoBehaviour {
 	public delegate void ClickAction();
 	public event ClickAction OnClicked;
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
 	public delegate void DebugClickAction(GlobalShit.WaveType _wave);
 	public event DebugClickAction OnDebugClicked;
 
 	public GlobalShit.WaveType m_WaveType;
-#endif
+//#endif
 
 	public void OnClick()
 	{
@@ -19,11 +19,11 @@ public class ButtonReceiver : MonoBehaviour {
 			OnClicked();
 	}
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
 	public void OnDebugClick()
 	{
 		if (OnDebugClicked != null)
 			OnDebugClicked(m_WaveType);
 	}
-#endif
+//#endif
 }

@@ -60,9 +60,9 @@ public class InputManager : MonoBehaviour {
 				if(br!=null)
 				{
 					br.OnClick();
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
 					br.OnDebugClick();
-#endif
+//#endif
 				}
 			}
 		}

@@ -16,7 +16,7 @@ public class LarvaCreator : MonoBehaviour
 			if(_larvaList[i].m_ComesFromElder)
 			{
 				_larvaList.RemoveAt(i);
-				i=0;
+				i=-1;
 			}
 		}
 
